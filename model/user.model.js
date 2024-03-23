@@ -10,7 +10,8 @@ async function getUserByEmail({ email }) {
       .input('email', sql.NVarChar, email)
       .query('SELECT * FROM Users WHERE email = @email');
 
-    return result.recordset[0];
+    console.log(result, "<< result");  
+    return result.recordset?.[0];
   } catch (error) {
     throw error;
   }

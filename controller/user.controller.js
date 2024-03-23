@@ -42,9 +42,9 @@ async function register(req, res) {
     console.log(result, "<< result controller");
 
     res.status(201).json({
-      id: result.id,
-      email: result.email,
-      full_name: result.full_name
+      id: result?.id,
+      email: result?.email,
+      full_name: result?.full_name
     })
 
   } catch (error) {
