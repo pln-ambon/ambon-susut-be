@@ -65,7 +65,7 @@ async function getTableTotal(req, res) {
       cos_phi: cos_phi / data.length,
       freq: freq / data.length
     }
-    
+
     res.status(200).json(result)
   } catch (error) {
     res.status(error?.code || 500 ).json(error)
@@ -74,5 +74,6 @@ async function getTableTotal(req, res) {
 
 module.exports = {
   getAllUnit,
-  getAllUnitMeter
+  getAllUnitMeter,
+  getTableTotal
 }
