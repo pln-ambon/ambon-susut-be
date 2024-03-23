@@ -49,7 +49,7 @@ async function getTableTotal(req, res) {
     let freq = 0
 
     data?.forEach(val => {
-      data += val.p || 0
+      daya += val.p || 0
       dmp += val.p_dmp || 0
       voltage += val.v || 0
       curent += val.i || 0
