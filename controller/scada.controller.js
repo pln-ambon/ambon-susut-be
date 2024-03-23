@@ -47,6 +47,7 @@ async function getTableTotal(req, res) {
     let curent = 0
     let cos_phi = 0
     let freq = 0
+    let susut = 0
 
     data?.forEach(val => {
       daya += val.p || 0
@@ -55,6 +56,7 @@ async function getTableTotal(req, res) {
       curent += val.i || 0
       cos_phi += val.pf || 0
       freq += val.f || 0
+      susut += val.susut || 0
     })
 
     const result = {
@@ -63,7 +65,8 @@ async function getTableTotal(req, res) {
       voltage: voltage / data.length,
       curent: curent / data.length,
       cos_phi: cos_phi / data.length,
-      freq: freq / data.length
+      freq: freq / data.length,
+      susut,
     }
 
     res.status(200).json({
