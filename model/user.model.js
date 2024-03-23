@@ -29,7 +29,7 @@ async function insertUser({ email, full_name, password }) {
       .input('email', sql.NVarChar, email)
       .input('full_name', sql.NVarChar, full_name)
       .input('password', sql.NVarChar, hashPassword)
-      .query('INSERT INTO SCADA_USER (email, full_name, password) VALUES (@email, @full_name, @password)');
+      .query('INSERT INTO SCADA_USER (email, full_name, password) OUTPUT Inserted.ID, Inserted.email, Inserted.full_name VALUES (@email, @full_name, @password)');
 
     console.log(result, "<< result");
     return result.recordset?.[0];
