@@ -1,10 +1,11 @@
 // models/UserModel.js
 const sql = require('mssql');
 const { encrypt } = require("../utils/bcrypt")
+const { sqlConfig } =require("../config")
 
 async function getUserByEmail({ email }) {
   try {
-    const pool = await sql.connect(config);
+    const pool = await sql.connect(sqlConfig);
     const result = await pool.request()
       .input('email', sql.NVarChar, email)
       .query('SELECT * FROM Users WHERE email = @email');
@@ -22,7 +23,7 @@ async function insertUser({ email, full_name, password }) {
 
     console.log(hashPassword, "<< hash password");
 
-    const pool = await sql.connect(config);
+    const pool = await sql.connect(sqlConfig);
     const result = await pool.request()
       .input('email', sql.NVarChar, email)
       .input('full_name', sql.NVarChar, full_name)
