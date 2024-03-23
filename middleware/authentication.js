@@ -13,8 +13,6 @@ async function authentication(req, res, next) {
     }
   
     const user = verifyToken(token)
-
-    console.log(user, "<< user");
     
     if (!user) {
       throw {
@@ -27,7 +25,7 @@ async function authentication(req, res, next) {
 
     next()
   } catch (error) {
-    res.status(error?.code).json(error.message)
+    res.status(error?.code || 500).json(error.message)
   }
   
 }
