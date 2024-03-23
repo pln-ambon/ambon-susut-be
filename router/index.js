@@ -5,6 +5,7 @@ const scada = require("./monitoring")
 const { authentication } = require("../middleware/authentication")
 
 router.use("/auth", auth)
-router.use("/scada", authentication, scada)
+router.use(authentication)
+router.use("/scada", scada)
 
 module.exports = router
