@@ -66,7 +66,10 @@ async function getTableTotal(req, res) {
       freq: freq / data.length
     }
 
-    res.status(200).json(result)
+    res.status(200).json({
+      data,
+      result
+    })
   } catch (error) {
     res.status(error?.code || 500 ).json(error)
   }
