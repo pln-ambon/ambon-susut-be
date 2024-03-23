@@ -4,6 +4,7 @@ const {
 } = require("../model/user.model")
 
 const { generateToken } = require("../utils/jwt")
+const { compare } = require("../utils/bcrypt")
 
 
 async function login(req, res) {
@@ -11,14 +12,35 @@ async function login(req, res) {
       const { email, password } = req.body
       const user = await getUserByEmail({ email })
 
+      if (!user) {
+        throw {
+          code: 401,
+          message: "Email not found!"
+        }
+      }
+
+      // compare password
+      const isMatch = compare(password, user.password)
+
+      if (!isMatch) {
+        throw {
+          code: 401,
+          message: "Password invalid"
+        }
+      }
+
       // Create a JWT token
-      const token = generateToken({ userId: user.id })
+      const token = generateToken({ 
+        id: user.ID,
+        email: user.email,
+      })
+
       // Set token as a cookie
       res.cookie('token', token, { httpOnly: true });
       res.status(200).json({ message: 'Login successful' });
       
     } catch (error) {
-      res.send(401).json(error)
+      res.send(error?.code || 500 ).json(error)
     }
   }
 
@@ -31,7 +53,14 @@ async function register(req, res) {
       password
     } = req.body
 
-    console.log(email, "<< controller register");
+    const user = await getUserByEmail({ email })
+
+    if (user) {
+      throw {
+        code: 409,
+        message: "Email already exists"
+      }
+    }
 
     const result = await insertUser({
       email,
@@ -39,10 +68,8 @@ async function register(req, res) {
       password
     })
 
-    console.log(result, "<< result controller");
-
     res.status(201).json({
-      id: result?.id,
+      id: result?.ID,
       email: result?.email,
       full_name: result?.full_name
     })

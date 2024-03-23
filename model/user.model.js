@@ -8,9 +8,8 @@ async function getUserByEmail({ email }) {
     const pool = await sql.connect(sqlConfig);
     const result = await pool.request()
       .input('email', sql.NVarChar, email)
-      .query('SELECT * FROM Users WHERE email = @email');
+      .query('SELECT * FROM SCADA_USER WHERE email = @email');
 
-    console.log(result, "<< result");  
     return result.recordset?.[0];
   } catch (error) {
     throw error;
@@ -22,8 +21,6 @@ async function insertUser({ email, full_name, password }) {
 
     const hashPassword = encrypt(password)
 
-    console.log(hashPassword, "<< hash password");
-
     const pool = await sql.connect(sqlConfig);
     const result = await pool.request()
       .input('email', sql.NVarChar, email)
@@ -31,11 +28,9 @@ async function insertUser({ email, full_name, password }) {
       .input('password', sql.NVarChar, hashPassword)
       .query('INSERT INTO SCADA_USER (email, full_name, password) OUTPUT Inserted.ID, Inserted.email, Inserted.full_name VALUES (@email, @full_name, @password)');
 
-    console.log(result, "<< result");
     return result.recordset?.[0];
   } catch (error) {
 
-    console.log(error, "<< error model");
     throw error;
   }
 }
