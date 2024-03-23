@@ -18,9 +18,18 @@ async function getAllUnit(req, res) {
 async function getAllUnitMeter(req, res) {
   try {
     
-    const units = await getAllScadaUnitMeter()
+    const data = await getAllScadaUnitMeter()
 
-    res.status(200).json(units)
+    const groupedData = data.reduce((acc, obj) => {
+      const key = obj.unit_name;
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(obj);
+      return acc;
+    }, {});
+
+    res.status(200).json(groupedData)
   } catch (error) {
     res.status(error?.code || 500 ).json(error)
   }
