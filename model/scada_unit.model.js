@@ -11,3 +11,7 @@ async function getAllScadaUnit() {
     throw error;
   }
 }
+
+module.exports = {
+  getAllScadaUnit
+}
