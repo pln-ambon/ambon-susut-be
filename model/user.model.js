@@ -38,5 +38,6 @@ async function insertUser({ email, full_name, password }) {
 }
 
 module.exports = {
-  getUserByEmail
+  getUserByEmail,
+  insertUser
 };

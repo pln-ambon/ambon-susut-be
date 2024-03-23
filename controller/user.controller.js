@@ -48,7 +48,7 @@ async function register(req, res) {
     })
 
   } catch (error) {
-    res.status(error?.code).json(error?.message)
+    res.status(500).json(error?.message)
   }
 }
 module.exports = {
