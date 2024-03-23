@@ -71,6 +71,7 @@ async function getTableTotal(req, res) {
       result
     })
   } catch (error) {
+    console.log(error, "<< error");
     res.status(error?.code || 500 ).json(error)
   }
 }
