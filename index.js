@@ -2,6 +2,12 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const { PORT } = require("./config")
+const router = require("./router")
+
+const app = express();
+
+app.use(express.json());
+app.use(cookieParser());
 
 const { generateToken } = require("./utils/jwt")
 const { authentication } = require("./middleware/authentication")
@@ -12,10 +18,6 @@ const users = [
   { id: 2, email: 'user2@mail.com', password: 'password2' }
 ];
 
-const app = express();
-
-app.use(express.json());
-app.use(cookieParser());
 
 // Login route
 app.post('/auth/login', (req, res) => {

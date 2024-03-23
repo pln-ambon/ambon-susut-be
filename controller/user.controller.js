@@ -3,19 +3,24 @@ const {
   insertUser
 } = require("../model/user.model")
 
-class User {
-  // static async login(req, res) => {
-  //   try {
-  //     const { email, password } = req.body
-  //     const user = await getUserByEmail({ email })
+const { generateToken } = require("../utils/jwt")
 
+
+async function login(req, res) {
+    try {
+      const { email, password } = req.body
+      const user = await getUserByEmail({ email })
+
+      // Create a JWT token
+      const token = generateToken({ userId: user.id })
+      // Set token as a cookie
+      res.cookie('token', token, { httpOnly: true });
+      res.status(200).json({ message: 'Login successful' });
       
-  //   } catch (error) {
-  //     res.send(500).json(error)
-  //   }
-  // }
-
-}
+    } catch (error) {
+      res.send(401).json(error)
+    }
+  }
 
 async function register(req, res) {
   try {
@@ -43,5 +48,6 @@ async function register(req, res) {
   }
 }
 module.exports = {
+  login,
   register
 }
