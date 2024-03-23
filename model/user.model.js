@@ -20,6 +20,8 @@ async function insertUser({ email, full_name, password }) {
 
     const hashPassword = encrypt(password)
 
+    console.log(hashPassword, "<< hash password");
+
     const pool = await sql.connect(config);
     const result = await pool.request()
       .input('email', sql.NVarChar, email)
@@ -29,6 +31,8 @@ async function insertUser({ email, full_name, password }) {
 
     return result.recordset[0];
   } catch (error) {
+
+    console.log(error, "<< error model");
     throw error;
   }
 }

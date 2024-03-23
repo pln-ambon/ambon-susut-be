@@ -31,11 +31,15 @@ async function register(req, res) {
       password
     } = req.body
 
+    console.log(email, "<< controller register");
+
     const result = await insertUser({
       email,
       full_name,
       password
     })
+
+    console.log(result, "<< result controller");
 
     res.status(201).json({
       id: result.id,
