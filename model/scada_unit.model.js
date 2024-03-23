@@ -23,7 +23,7 @@ async function getAllScadaUnitMeter() {
         OUTER APPLY (
             SELECT TOP 1 *
             FROM SCADA_METER_2 B
-            WHERE B.unit_id = A.id
+            WHERE B.unit_id = A.unit_id
             ORDER BY B.id DESC
         ) AS B;
       `);
