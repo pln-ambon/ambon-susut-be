@@ -20,7 +20,9 @@ async function login(req, res) {
       }
 
       // compare password
-      const isMatch = compare(password, user.password)
+      const isMatch = await compare(password, user.password)
+
+      console.log(isMatch, "<< isMatch");
 
       if (!isMatch) {
         throw {
