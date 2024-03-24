@@ -150,10 +150,45 @@ async function getTableDetail(req, res) {
   }
 }
 
+async function getDataGrafikbeban(req, res) {
+  try {
+    
+    const data = await getAllScadaUnitMeter()
+
+    const groupedData = data.reduce((acc, obj) => {
+      const key = obj.unit_name;
+      if (!acc[key]) {
+        acc[key] = 0
+      }
+
+      // total
+      acc[key] += obj.p / 1000
+    
+      return acc;
+    }, {});
+
+    let unitNames = []
+    let unitValue = []
+
+    for (let prop in groupedData) {
+      unitNames.push(props)
+      unitValue.push(obj[prop])
+    }
+
+    res.status(200).json({
+      unitNames,
+      unitValue
+    })
+  } catch (error) {
+    res.status(error?.code || 500 ).json(error)
+  }
+}
+
 module.exports = {
   getAllUnit,
   getAllUnitMeter,
   getDataMap,
   getTableTotal,
   getTableDetail,
+  getDataGrafikbeban
 }
