@@ -3,8 +3,10 @@ const { verifyToken } = require("../utils/jwt")
 
 async function authentication(req, res, next) {
   try {
+
     const token = req.cookies.token;
   
+    // console.log(token, "<< sini");
     if (token == null) {
         throw {
           code: 401,
