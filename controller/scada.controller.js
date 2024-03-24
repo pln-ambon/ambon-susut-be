@@ -96,10 +96,7 @@ async function getTableTotal(req, res) {
       susut,
     }
 
-    res.status(200).json({
-      data,
-      result
-    })
+    res.status(200).json(result)
   } catch (error) {
     res.status(error?.code || 500 ).json(error)
   }
