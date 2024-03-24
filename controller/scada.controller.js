@@ -3,7 +3,6 @@ const {
   getAllScadaUnitMeter
 } = require("../model/scada_unit.model")
 
-
 async function getAllUnit(req, res) {
   try {
     
@@ -35,6 +34,34 @@ async function getAllUnitMeter(req, res) {
   }
 }
 
+async function getDataMap(req, res) {
+  try {
+    
+    const data = await getAllScadaUnitMeter()
+
+    const groupedData = data.reduce((acc, obj) => {
+      const key = obj.unit_name;
+      if (!acc[key]) {
+        acc[key] = {
+          pTotal: 0,
+          vTotal: 0,
+          vLength: 0,
+          vAverage: 0,
+        }
+      }
+      acc[key].pTotal += obj.p
+      acc[key].vTotal += obj.v
+      acc[key].vLength += 1
+      acc[key].vAverage += acc[key].vTotal / acc[key].vLength
+    
+      return acc;
+    }, {});
+
+    res.status(200).json(groupedData)
+  } catch (error) {
+    res.status(error?.code || 500 ).json(error)
+  }
+}
 
 async function getTableTotal(req, res) {
   try {
@@ -79,8 +106,58 @@ async function getTableTotal(req, res) {
   }
 }
 
+
+async function getTableDetail(req, res) {
+  try {
+    
+    const data = await getAllScadaUnitMeter()
+
+    const groupedData = data.reduce((acc, obj) => {
+      const key = obj.unit_name;
+      if (!acc[key]) {
+        acc[key] = {
+          total: {
+            p_dmp_netto: 0,
+            p_dmp_pasok: 0,
+            p: 0,
+            vTotal: 0,
+            vLength: 0,
+            vAverage: 0,
+          },
+          detail: []
+        }
+      }
+
+      // total
+      acc[key].total.p_dmp_netto += obj.p_dmp_netto
+      acc[key].total.p_dmp_pasok += obj.p_dmp_pasok
+      acc[key].total.p += obj.p
+      acc[key].total.vTotal += obj.v
+      acc[key].total.vLength += 1
+      acc[key].total.vAverage += acc[key].total.vTotal / acc[key].total.vLength
+
+      // detail
+      acc[key].detail.push({
+        unit_subname: obj.unit_subname,
+        p_dmp_netto: obj.p_dmp_netto,
+        p_dmp_pasok: obj.p_dmp_pasok,
+        p: obj.p,
+        v: obj.v
+      })
+
+      return acc;
+    }, {});
+
+    res.status(200).json(groupedData)
+  } catch (error) {
+    res.status(error?.code || 500 ).json(error)
+  }
+}
+
 module.exports = {
   getAllUnit,
   getAllUnitMeter,
-  getTableTotal
+  getDataMap,
+  getTableTotal,
+  getTableDetail,
 }
