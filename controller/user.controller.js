@@ -31,14 +31,17 @@ async function login(req, res) {
         }
       }
 
-      // Create a JWT token
-      const token = generateToken({ 
-        id: user.ID,
-        email: user.email,
-      })
+      if (isMatch) {
+        // Create a JWT token
+        const token = generateToken({ 
+          id: user.ID,
+          email: user.email,
+        })
+  
+        // Set token as a cookie
+        res.cookie('token', token, { httpOnly: true });
+      }
 
-      // Set token as a cookie
-      res.cookie('token', token, { httpOnly: true });
       res.status(200).json({ message: 'Login successful' });
       
     } catch (error) {
