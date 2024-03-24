@@ -171,8 +171,8 @@ async function getDataGrafikbeban(req, res) {
     let unitValue = []
 
     for (let prop in groupedData) {
-      unitNames.push(props)
-      unitValue.push(obj[prop])
+      unitNames.push(prop)
+      unitValue.push(groupedData[prop])
     }
 
     res.status(200).json({
