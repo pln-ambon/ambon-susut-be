@@ -49,7 +49,7 @@ async function getDataMap(req, res) {
           vAverage: 0,
         }
       }
-      acc[key].pTotal += obj.p
+      acc[key].pTotal += obj.p / 1000 // MW
       acc[key].vTotal += obj.v
       acc[key].vLength += 1
       acc[key].vAverage += acc[key].vTotal / acc[key].vLength
@@ -77,8 +77,8 @@ async function getTableTotal(req, res) {
     let susut = 0
 
     data?.forEach(val => {
-      daya += val.p || 0
-      dmp += val.p_dmp || 0
+      daya += (val.p || 0) / 1000 // MW
+      dmp += (val.p_dmp || 0) / 1000 // MW
       voltage += val.v || 0
       curent += val.i || 0
       cos_phi += val.pf || 0
@@ -101,7 +101,6 @@ async function getTableTotal(req, res) {
       result
     })
   } catch (error) {
-    console.log(error, "<< error");
     res.status(error?.code || 500 ).json(error)
   }
 }
@@ -127,27 +126,26 @@ async function getTableDetail(req, res) {
           detail: []
         }
       }
-
+    
       // total
-      acc[key].total.p_dmp_netto += obj.p_dmp_netto
-      acc[key].total.p_dmp_pasok += obj.p_dmp_pasok
-      acc[key].total.p += obj.p
-      acc[key].total.vTotal += obj.v
+      acc[key].total.p_dmp_netto += obj.p_dmp_netto / 1000 // MW
+      acc[key].total.p_dmp_pasok += obj.p_dmp_pasok / 1000
+      acc[key].total.p += obj.p / 1000
+      acc[key].total.vTotal += obj.v // KV
       acc[key].total.vLength += 1
       acc[key].total.vAverage += acc[key].total.vTotal / acc[key].total.vLength
-
+    
       // detail
       acc[key].detail.push({
         unit_subname: obj.unit_subname,
-        p_dmp_netto: obj.p_dmp_netto,
-        p_dmp_pasok: obj.p_dmp_pasok,
-        p: obj.p,
+        p_dmp_netto: obj.p_dmp_netto / 1000,
+        p_dmp_pasok: obj.p_dmp_pasok / 1000,
+        p: obj.p / 1000,
         v: obj.v
       })
-
+    
       return acc;
     }, {});
-
     res.status(200).json(groupedData)
   } catch (error) {
     res.status(error?.code || 500 ).json(error)
