@@ -97,6 +97,7 @@ async function getTableTotal(req, res) {
     }
 
     res.status(200).json(result)
+    // res.status(200).json("SUccessSS")
   } catch (error) {
     res.status(error?.code || 500 ).json(error)
   }
