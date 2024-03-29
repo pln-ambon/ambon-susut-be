@@ -1,3 +1,5 @@
+const moment = require("moment")
+
 const {
   getAllScadaUnit,
   getAllScadaUnitMeter,
@@ -221,18 +223,16 @@ async function getLatest24Hour(req, res) {
 
     const { unitId } = req.params
 
-    console.log(unitId, "<< unit id");
-    
     const data = await get24HourLatestData({unitId})
 
-    console.log(data, "<< data");
     // Membuat objek untuk menyimpan hasil pengelompokan
     const groupedData = {};
 
     // Iterasi melalui array data
     data.forEach(item => {
         // Membuat kunci untuk pengelompokan berdasarkan unit_id dan time
-        const key = `${item.unit_id}-${item.time}`;
+        const time = moment(item.time)
+        const key = time.format("YYYY-MM-DD HH:mm")
 
         // Jika kunci belum ada di objek groupedData, inisialisasi dengan array kosong
         if (!groupedData[key]) {
