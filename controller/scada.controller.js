@@ -51,7 +51,9 @@ async function getDataMap(req, res) {
       }
       acc[key].pTotal += obj.p / 1000 // MW
       acc[key].vTotal += obj.v
-      acc[key].vLength += 1
+      if (obj.v) {
+        acc[key].vLength += 1
+      }
       acc[key].vAverage += acc[key].vTotal / acc[key].vLength
     
       return acc;
@@ -75,6 +77,7 @@ async function getTableTotal(req, res) {
     let cos_phi = 0
     let freq = 0
     let susut = 0
+    let dataNotNull = 0
 
     data?.forEach(val => {
       daya += (val.p || 0) / 1000 // MW
@@ -84,15 +87,18 @@ async function getTableTotal(req, res) {
       cos_phi += val.pf || 0
       freq += val.f || 0
       susut += val.susut || 0
+      if (val.v) {
+        dataNotNull += 1
+      }
     })
 
     const result = {
       daya,
       dmp,
-      voltage: voltage / data.length,
-      curent: curent / data.length,
-      cos_phi: cos_phi / data.length,
-      freq: freq / data.length,
+      voltage: voltage / dataNotNull,
+      curent: curent / dataNotNull,
+      cos_phi: cos_phi / dataNotNull,
+      freq: freq / dataNotNull,
       susut,
     }
 
@@ -108,6 +114,15 @@ async function getTableDetail(req, res) {
   try {
     
     const data = await getAllScadaUnitMeter()
+
+    const grandTotal = {
+      p: 0,
+      p_dmp_netto: 0,
+      p_dmp_pasok: 0,
+      vAverage: 0,
+      vLength: 0,
+      vTotal: 0
+    }
 
     const groupedData = data.reduce((acc, obj) => {
       const key = obj.unit_name;
@@ -130,7 +145,9 @@ async function getTableDetail(req, res) {
       acc[key].total.p_dmp_pasok += obj.p_dmp_pasok / 1000
       acc[key].total.p += obj.p / 1000
       acc[key].total.vTotal += obj.v // KV
-      acc[key].total.vLength += 1
+      if (obj.v) {
+        acc[key].total.vLength += 1
+      }
       acc[key].total.vAverage += acc[key].total.vTotal / acc[key].total.vLength
     
       // detail
@@ -141,9 +158,23 @@ async function getTableDetail(req, res) {
         p: obj.p / 1000,
         v: obj.v
       })
+
+      // grandTotal
+      grandTotal.p += obj.p
+      grandTotal.p_dmp_netto += obj.p_dmp_netto
+      grandTotal.p_dmp_pasok += obj.p_dmp_pasok
+      grandTotal.vTotal += obj.v
+      if (obj.v) {
+        grandTotal.vLength += 1
+      }
     
       return acc;
     }, {});
+
+    grandTotal.vAverage = grandTotal.vTotal / grandTotal.vLength
+
+    groupedData.grandTotal = grandTotal
+
     res.status(200).json(groupedData)
   } catch (error) {
     res.status(error?.code || 500 ).json(error)
