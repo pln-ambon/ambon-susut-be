@@ -243,7 +243,19 @@ async function getLatest24Hour(req, res) {
         groupedData[key].push(item);
     });
 
-    res.status(200).json(groupedData)
+    const labels = []
+    const data = []
+
+    for (const key in groupedData ) {
+      const total = groupedData[key].reduce((total, current) => total + current.p, 0);
+      labels.push(key)
+      data.push(total)
+    }
+    
+    res.status(200).json({
+      labels,
+      data
+    })
   } catch (error) {
     res.status(error?.code || 500 ).json(error)
   }
