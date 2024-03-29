@@ -244,17 +244,17 @@ async function getLatest24Hour(req, res) {
     });
 
     const labels = []
-    const data = []
+    const datasets = []
 
     for (const key in groupedData ) {
       const total = groupedData[key].reduce((total, current) => total + current.p, 0);
       labels.push(key)
-      data.push(total)
+      datasets.push(total)
     }
-    
+
     res.status(200).json({
       labels,
-      data
+      datasets
     })
   } catch (error) {
     res.status(error?.code || 500 ).json(error)
