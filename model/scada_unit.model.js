@@ -42,14 +42,12 @@ async function getAllScadaUnitMeter() {
   }
 }
 
-async function get24HourLatestData({ unit_id }) {
+async function get24HourLatestData({ unitId }) {
   try {
-    console.log(unit_id, "<< model")
 
-    const idUnit = 11
     const pool = await sql.connect(sqlConfig);
     const result = await pool.request()
-      .input('unit_id', sql.Int, idUnit)
+      .input('unit_id', sql.Int, unitId)
       .query(`
         SELECT *
         FROM SCADA_METER_2
