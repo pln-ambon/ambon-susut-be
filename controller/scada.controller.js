@@ -148,7 +148,7 @@ async function getTableDetail(req, res) {
       if (obj.v) {
         acc[key].total.vLength += 1
       }
-      acc[key].total.vAverage += acc[key].total.vTotal / acc[key].total.vLength
+      acc[key].total.vAverage = acc[key].total.vTotal / acc[key].total.vLength
     
       // detail
       acc[key].detail.push({
@@ -160,9 +160,9 @@ async function getTableDetail(req, res) {
       })
 
       // grandTotal
-      grandTotal.p += obj.p
-      grandTotal.p_dmp_netto += obj.p_dmp_netto
-      grandTotal.p_dmp_pasok += obj.p_dmp_pasok
+      grandTotal.p += obj.p / 1000
+      grandTotal.p_dmp_netto += obj.p_dmp_netto / 1000
+      grandTotal.p_dmp_pasok += obj.p_dmp_pasok / 1000
       grandTotal.vTotal += obj.v
       if (obj.v) {
         grandTotal.vLength += 1
