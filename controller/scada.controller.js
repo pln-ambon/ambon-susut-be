@@ -276,6 +276,8 @@ async function getLatest24Hour(req, res) {
         labels,
         datasets
       }
+
+      console.log(labels, "<< labels");
     }
 
     res.status(200).json(result)
