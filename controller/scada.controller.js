@@ -221,41 +221,64 @@ async function getDataGrafikbeban(req, res) {
 async function getLatest24Hour(req, res) {
   try {
 
-    const { unitId } = req.params
+    const result = {}
 
-    const data = await get24HourLatestData({unitId})
+    const arr = [
+      {
+        id: 11,
+        name: "PLTMG WAAI"
+      },
+      {
+        id: 12,
+        name: "BMPP WAAI"
+      },
+      {
+        id: 13,
+        name: "PLTD POKA"
+      },
+      {
+        id: 14,
+        name: "PLTD HATIVE KECIL"
+      },
+    ]
 
-    // Membuat objek untuk menyimpan hasil pengelompokan
-    const groupedData = {};
+    for (const item of arr) {
+      const data = await get24HourLatestData({unitId: item.id})
+  
+      // Membuat objek untuk menyimpan hasil pengelompokan
+      const groupedData = {};
+  
+      // Iterasi melalui array data
+      data.forEach(item => {
+          // Membuat kunci untuk pengelompokan berdasarkan unit_id dan time
+          const time = moment(item.time)
+          const key = time.format("YYYY-MM-DD HH:mm")
+  
+          // Jika kunci belum ada di objek groupedData, inisialisasi dengan array kosong
+          if (!groupedData[key]) {
+              groupedData[key] = [];
+          }
+  
+          // Memasukkan item ke dalam array yang sesuai dengan kunci
+          groupedData[key].push(item);
+      });
+  
+      const labels = []
+      const datasets = []
+  
+      for (const key in groupedData ) {
+        const total = groupedData[key].reduce((total, current) => total + current.p, 0);
+        labels.push(key)
+        datasets.push(total)
+      }
 
-    // Iterasi melalui array data
-    data.forEach(item => {
-        // Membuat kunci untuk pengelompokan berdasarkan unit_id dan time
-        const time = moment(item.time)
-        const key = time.format("YYYY-MM-DD HH:mm")
-
-        // Jika kunci belum ada di objek groupedData, inisialisasi dengan array kosong
-        if (!groupedData[key]) {
-            groupedData[key] = [];
-        }
-
-        // Memasukkan item ke dalam array yang sesuai dengan kunci
-        groupedData[key].push(item);
-    });
-
-    const labels = []
-    const datasets = []
-
-    for (const key in groupedData ) {
-      const total = groupedData[key].reduce((total, current) => total + current.p, 0);
-      labels.push(key)
-      datasets.push(total)
+      result[item.name] = {
+        labels,
+        datasets
+      }
     }
 
-    res.status(200).json({
-      labels,
-      datasets
-    })
+    res.status(200).json(result)
   } catch (error) {
     res.status(error?.code || 500 ).json(error)
   }

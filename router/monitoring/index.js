@@ -15,6 +15,6 @@ router.get("/total-table", getTableTotal)
 router.get("/detail-table", getTableDetail)
 router.get("/data-map", getDataMap)
 router.get("/grafik-beban", getDataGrafikbeban)
-router.get("/24-hour/:unitId", getLatest24Hour)
+router.get("/24-hour", getLatest24Hour)
 
 module.exports = router
