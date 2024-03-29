@@ -221,7 +221,24 @@ async function getLatest24Hour(req, res) {
     
     const data = await get24HourLatestData()
 
-    res.status(200).json(data)
+    // Membuat objek untuk menyimpan hasil pengelompokan
+    const groupedData = {};
+
+    // Iterasi melalui array data
+    data.forEach(item => {
+        // Membuat kunci untuk pengelompokan berdasarkan unit_id dan time
+        const key = `${item.unit_id}-${item.time}`;
+
+        // Jika kunci belum ada di objek groupedData, inisialisasi dengan array kosong
+        if (!groupedData[key]) {
+            groupedData[key] = [];
+        }
+
+        // Memasukkan item ke dalam array yang sesuai dengan kunci
+        groupedData[key].push(item);
+    });
+
+    res.status(200).json(groupedData)
   } catch (error) {
     res.status(error?.code || 500 ).json(error)
   }
