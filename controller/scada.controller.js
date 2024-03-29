@@ -54,7 +54,7 @@ async function getDataMap(req, res) {
       if (obj.v) {
         acc[key].vLength += 1
       }
-      acc[key].vAverage += acc[key].vTotal / acc[key].vLength
+      acc[key].vAverage = acc[key].vTotal / acc[key].vLength
     
       return acc;
     }, {});
