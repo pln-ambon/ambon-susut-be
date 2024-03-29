@@ -220,9 +220,12 @@ async function getLatest24Hour(req, res) {
   try {
 
     const { unitId } = req.params
+
+    console.log(unitId, "<< unit id");
     
     const data = await get24HourLatestData(unitId)
 
+    console.log(data, "<< data");
     // Membuat objek untuk menyimpan hasil pengelompokan
     const groupedData = {};
 
