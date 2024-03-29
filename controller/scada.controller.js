@@ -218,8 +218,10 @@ async function getDataGrafikbeban(req, res) {
 
 async function getLatest24Hour(req, res) {
   try {
+
+    const { unitId } = req.params
     
-    const data = await get24HourLatestData()
+    const data = await get24HourLatestData(unitId)
 
     // Membuat objek untuk menyimpan hasil pengelompokan
     const groupedData = {};

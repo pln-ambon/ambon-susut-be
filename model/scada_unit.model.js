@@ -42,15 +42,18 @@ async function getAllScadaUnitMeter() {
   }
 }
 
-async function get24HourLatestData() {
+async function get24HourLatestData({ unit_id }) {
   try {
     const pool = await sql.connect(sqlConfig);
     const result = await pool.request()
+      .input('unit_id', sql.Int, unit_id)
       .query(`
         SELECT *
         FROM SCADA_METER_2
         WHERE time >= DATEADD(HOUR, -24, GETDATE())
-          AND DATEPART(MINUTE, time) = 0;
+          AND DATEPART(MINUTE, time) = 0
+          AND unit_id = @unit_id
+          ;
       `);
 
     return result.recordset;
