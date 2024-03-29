@@ -42,7 +42,25 @@ async function getAllScadaUnitMeter() {
   }
 }
 
+async function get24HourLatestData() {
+  try {
+    const pool = await sql.connect(sqlConfig);
+    const result = await pool.request()
+      .query(`
+        SELECT *
+        FROM SCADA_METER_2
+        WHERE time >= DATEADD(HOUR, -24, GETDATE())
+          AND DATEPART(MINUTE, time) = 0;
+      `);
+
+    return result.recordset;
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
   getAllScadaUnit,
-  getAllScadaUnitMeter
+  getAllScadaUnitMeter,
+  get24HourLatestData
 }

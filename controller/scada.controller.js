@@ -1,6 +1,7 @@
 const {
   getAllScadaUnit,
-  getAllScadaUnitMeter
+  getAllScadaUnitMeter,
+  get24HourLatestData
 } = require("../model/scada_unit.model")
 
 async function getAllUnit(req, res) {
@@ -215,11 +216,23 @@ async function getDataGrafikbeban(req, res) {
   }
 }
 
+async function getLatest24Hour(req, res) {
+  try {
+    
+    const data = await get24HourLatestData()
+
+    res.status(200).json(data)
+  } catch (error) {
+    res.status(error?.code || 500 ).json(error)
+  }
+}
+
 module.exports = {
   getAllUnit,
   getAllUnitMeter,
   getDataMap,
   getTableTotal,
   getTableDetail,
-  getDataGrafikbeban
+  getDataGrafikbeban,
+  getLatest24Hour
 }
