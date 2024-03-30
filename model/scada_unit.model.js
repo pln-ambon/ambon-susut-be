@@ -62,8 +62,29 @@ async function get24HourLatestData({ unitId }) {
   }
 }
 
+async function getDataEvery5Minutes({ unitId }) {
+  try {
+
+    const pool = await sql.connect(sqlConfig);
+    const result = await pool.request()
+      .input('unit_id', sql.Int, unitId)
+      .query(`
+        SELECT *
+        FROM SCADA_METER_2
+        WHERE time >= DATEADD(HOUR, -24, GETDATE())
+          AND DATEPART(MINUTE, time) % 5 = 0
+          AND unit_id = @unit_id;
+      `);
+
+    return result.recordset;
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
   getAllScadaUnit,
   getAllScadaUnitMeter,
-  get24HourLatestData
+  get24HourLatestData,
+  getDataEvery5Minutes
 }

@@ -6,7 +6,8 @@ const {
   getDataMap,
   getTableDetail,
   getDataGrafikbeban,
-  getLatest24Hour
+  getLatest24Hour,
+  getLatest24HourEvery5Minute
 } = require("../../controller/scada.controller")
 
 router.get("/units", getAllUnit)
@@ -16,5 +17,6 @@ router.get("/detail-table", getTableDetail)
 router.get("/data-map", getDataMap)
 router.get("/grafik-beban", getDataGrafikbeban)
 router.get("/24-hour", getLatest24Hour)
+router.get("/mod-5-minutes", getLatest24HourEvery5Minute)
 
 module.exports = router

@@ -3,7 +3,8 @@ const moment = require("moment")
 const {
   getAllScadaUnit,
   getAllScadaUnitMeter,
-  get24HourLatestData
+  get24HourLatestData,
+  getDataEvery5Minutes
 } = require("../model/scada_unit.model")
 
 async function getAllUnit(req, res) {
@@ -302,6 +303,86 @@ async function getLatest24Hour(req, res) {
   }
 }
 
+async function getLatest24HourEvery5Minute(req, res) {
+  try {
+
+    const result = {}
+
+    const arr = [
+      {
+        id: 11,
+        name: "PLTMG WAAI"
+      },
+      {
+        id: 12,
+        name: "BMPP WAAI"
+      },
+      {
+        id: 13,
+        name: "PLTD POKA"
+      },
+      {
+        id: 14,
+        name: "PLTD HATIVE KECIL"
+      },
+    ]
+
+    let arrTotal = []
+
+    for (const item of arr) {
+      const data = await getDataEvery5Minutes({unitId: item.id})
+  
+      // Membuat objek untuk menyimpan hasil pengelompokan
+      const groupedData = {};
+  
+      // Iterasi melalui array data
+      data.forEach(item => {
+          // Membuat kunci untuk pengelompokan berdasarkan unit_id dan time
+          const time = moment(item.time)
+          const key = time.utc().format("YYYY-MM-DD HH:mm")
+  
+          // Jika kunci belum ada di objek groupedData, inisialisasi dengan array kosong
+          if (!groupedData[key]) {
+              groupedData[key] = [];
+          }
+  
+          // Memasukkan item ke dalam array yang sesuai dengan kunci
+          groupedData[key].push(item);
+      });
+  
+      const labels = []
+      const datasets = []
+  
+      for (const key in groupedData ) {
+        const total = groupedData[key].reduce((total, current) => total + current.p, 0);
+        labels.push(key)
+        datasets.push(total)
+      }
+
+      if (!arrTotal?.length) {
+        arrTotal = [...datasets]
+      } else {
+        arrTotal.forEach((item, idx) => {
+          arrTotal[idx] += datasets[idx]
+        })
+      }
+
+      result[item.name] = {
+        labels,
+        datasets
+      }
+
+    }
+
+    // calculate total
+    result.arrTotal = arrTotal
+
+    res.status(200).json(result)
+  } catch (error) {
+    res.status(error?.code || 500 ).json(error)
+  }
+}
+
 module.exports = {
   getAllUnit,
   getAllUnitMeter,
@@ -309,5 +390,6 @@ module.exports = {
   getTableTotal,
   getTableDetail,
   getDataGrafikbeban,
-  getLatest24Hour
+  getLatest24Hour,
+  getLatest24HourEvery5Minute
 }
