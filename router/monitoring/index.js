@@ -17,6 +17,6 @@ router.get("/detail-table", getTableDetail)
 router.get("/data-map", getDataMap)
 router.get("/grafik-beban", getDataGrafikbeban)
 router.get("/24-hour", getLatest24Hour)
-router.get("/5-minutes", getLatest24HourEvery5Minute)
+router.get("/5-minutes", getLatest24Hour)
 
 module.exports = router
