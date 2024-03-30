@@ -50,14 +50,18 @@ async function getDataMap(req, res) {
           vTotal: 0,
           vLength: 0,
           vAverage: 0,
+          fTotal: 0,
+          fAverage: 0,
         }
       }
       acc[key].pTotal += obj.p / 1000 // MW
       acc[key].vTotal += obj.v
+      acc[key].fTotal += obj.f
       if (obj.v) {
         acc[key].vLength += 1
       }
       acc[key].vAverage = acc[key].vTotal / acc[key].vLength
+      acc[key].fAverage = acc[key].fTotal / acc[key].vLength
     
       return acc;
     }, {});
