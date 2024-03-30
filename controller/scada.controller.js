@@ -242,6 +242,8 @@ async function getLatest24Hour(req, res) {
       },
     ]
 
+    let arrTotal = []
+
     for (const item of arr) {
       const data = await get24HourLatestData({unitId: item.id})
   
@@ -272,13 +274,23 @@ async function getLatest24Hour(req, res) {
         datasets.push(total)
       }
 
+      if (!arrTotal?.length) {
+        arrTotal = [...datasets]
+      } else {
+        arrTotal.forEach((item, idx) => {
+          arrTotal[idx] += datasets[idx]
+        })
+      }
+
       result[item.name] = {
         labels,
         datasets
       }
 
-      console.log(labels, "<< labels");
     }
+
+    // calculate total
+    result.arrTotal = arrTotal
 
     res.status(200).json(result)
   } catch (error) {

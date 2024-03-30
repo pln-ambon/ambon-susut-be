@@ -56,7 +56,6 @@ async function get24HourLatestData({ unitId }) {
           AND unit_id = @unit_id;
       `);
 
-    console.log(result.recordset, "<< record");
     return result.recordset;
   } catch (error) {
     throw error;
