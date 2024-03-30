@@ -305,7 +305,7 @@ async function getLatest24Hour(req, res) {
 
 async function getLatest24HourEvery5Minute(req, res) {
   try {
-
+    console.log("<< masuk sini");
     const result = {}
 
     const arr = [
