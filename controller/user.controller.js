@@ -38,6 +38,7 @@ async function login(req, res) {
   
         // Set token as a cookie
         res.cookie('token', token, { httpOnly: true });
+        res.cookie('full_name', user.full_name, { httpOnly: true });
       }
 
       res.status(200).json({ 
