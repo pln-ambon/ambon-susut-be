@@ -67,6 +67,8 @@ async function getDataMap(req, res) {
       return acc;
     }, {});
 
+    groupedData.date = data[0]?.time
+
     res.status(200).json(groupedData)
   } catch (error) {
     res.status(error?.code || 500 ).json(error)
