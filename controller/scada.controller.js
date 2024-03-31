@@ -67,7 +67,7 @@ async function getDataMap(req, res) {
       return acc;
     }, {});
 
-    groupedData.date = data[0]?.time
+    groupedData.date = moment(data[0]?.time).utc().locale('id').format('DD MMMM YYYY, HH:mm [WIT]')
 
     res.status(200).json(groupedData)
   } catch (error) {
