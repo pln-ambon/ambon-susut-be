@@ -339,6 +339,8 @@ async function getLatest24HourEvery5Minute(req, res) {
 
     let arrTotal = []
 
+    console.log(startTime, "<< start time controller");
+
     for (const item of arr) {
       const data = await getDataEvery5Minutes({unitId: item.id, startTime})
   
