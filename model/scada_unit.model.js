@@ -72,7 +72,7 @@ async function getDataEvery5Minutes({ unitId, startTime }) {
       .input('unit_id', sql.Int, unitId)
       .input('time', sql.DateTime, startTime)
       .query(`
-        SELECT *
+        SELECT p, time, unit_id
         FROM SCADA_METER_2
         WHERE time >= @time
             AND DATEPART(MINUTE, time) % 1 = 0
