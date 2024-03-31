@@ -22,8 +22,6 @@ async function login(req, res) {
       // compare password
       const isMatch = await compare(password, user.password)
 
-      console.log(isMatch, "<< isMatch");
-
       if (!isMatch) {
         throw {
           code: 401,
@@ -42,7 +40,10 @@ async function login(req, res) {
         res.cookie('token', token, { httpOnly: true });
       }
 
-      res.status(200).json({ message: 'Login successful' });
+      res.status(200).json({ 
+        message: 'Login successful',
+        full_name: user.full_name
+       });
       
     } catch (error) {
       res.status(error?.code || 500 ).json(error)
