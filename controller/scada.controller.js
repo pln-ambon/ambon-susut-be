@@ -43,6 +43,8 @@ async function getDataMap(req, res) {
     
     const data = await getAllScadaUnitMeter()
 
+    let time
+
     const groupedData = data.reduce((acc, obj) => {
       const key = obj.unit_name;
       if (!acc[key]) {
@@ -55,6 +57,12 @@ async function getDataMap(req, res) {
           fAverage: 0,
         }
       }
+
+      // set time 
+      if (!time) {
+        time = obj.time
+      }
+
       acc[key].pTotal += obj.p / 1000 // MW
       acc[key].vTotal += obj.v
       acc[key].fTotal += obj.f
@@ -67,7 +75,7 @@ async function getDataMap(req, res) {
       return acc;
     }, {});
 
-    groupedData.date = moment(data[0]?.time).utc().locale('id').format('DD MMMM YYYY, HH:mm [WIT]')
+    groupedData.date = moment(time).utc().locale('id').format('DD MMMM YYYY, HH:mm [WIT]')
 
     res.status(200).json(groupedData)
   } catch (error) {
