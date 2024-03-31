@@ -65,8 +65,6 @@ async function get24HourLatestData({ unitId }) {
 async function getDataEvery5Minutes({ unitId, startTime }) {
   try {
 
-    console.log(startTime, "<< model");
-
     const pool = await sql.connect(sqlConfig);
     const result = await pool.request()
       .input('unit_id', sql.Int, unitId)
