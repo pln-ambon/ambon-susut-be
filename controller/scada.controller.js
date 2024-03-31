@@ -310,6 +310,12 @@ async function getLatest24Hour(req, res) {
 
 async function getLatest24HourEvery5Minute(req, res) {
   try {
+
+    let startOfHour = moment().startOf('hour').set({ minute: 0, second: 0 }); // Mulai jam ini, atur menit dan detik menjadi 00:00
+    let lastDay = startOfHour.subtract(1, 'day')
+    let formattedStartTime = lastDay.format('YYYY-MM-DD HH:mm:ss'); // Format waktu sesuai kebutuhan SQL
+    const startTime = new Date(formattedStartTime) 
+
     const result = {}
 
     const arr = [
@@ -334,7 +340,7 @@ async function getLatest24HourEvery5Minute(req, res) {
     let arrTotal = []
 
     for (const item of arr) {
-      const data = await getDataEvery5Minutes({unitId: item.id})
+      const data = await getDataEvery5Minutes({unitId: item.id, startTime})
   
       // Membuat objek untuk menyimpan hasil pengelompokan
       const groupedData = {};
