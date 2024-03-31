@@ -72,7 +72,7 @@ async function getDataEvery5Minutes({ unitId }) {
         SELECT *
         FROM SCADA_METER_2
         WHERE time >= DATEADD(HOUR, -24, GETDATE())
-          AND DATEPART(MINUTE, time) % 5 = 0
+          AND DATEPART(MINUTE, time) % 1 = 0
           AND unit_id = @unit_id;
       `);
 
