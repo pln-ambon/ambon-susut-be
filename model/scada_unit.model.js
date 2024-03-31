@@ -62,24 +62,17 @@ async function get24HourLatestData({ unitId }) {
   }
 }
 
-async function getDataEvery5Minutes({ unitId }) {
+async function getDataEvery5Minutes({ unitId, startTime }) {
   try {
 
     const pool = await sql.connect(sqlConfig);
     const result = await pool.request()
       .input('unit_id', sql.Int, unitId)
+      .input('time', sql.Timestamp, startTime)
       .query(`
-      DECLARE @start_time DATETIME
-
-        SET @start_time = 
-            CASE
-                WHEN DATEPART(MINUTE, GETDATE()) >= 30 THEN DATEADD(MINUTE, -DATEPART(MINUTE, GETDATE()) + 30, DATEADD(HOUR, -24, GETDATE()))
-                ELSE DATEADD(HOUR, -24, DATEADD(MINUTE, -DATEPART(MINUTE, GETDATE()), GETDATE()))
-            END
-
-        SELECT *
+        SELECT p, time, unit_id
         FROM SCADA_METER_2
-        WHERE time >= @start_time
+        WHERE time >= @startTime
             AND DATEPART(MINUTE, time) % 1 = 0
             AND unit_id = @unit_id;
 

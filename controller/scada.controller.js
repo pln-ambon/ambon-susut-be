@@ -226,6 +226,11 @@ async function getDataGrafikbeban(req, res) {
 async function getLatest24Hour(req, res) {
   try {
 
+    let startOfHour = moment().startOf('hour').set({ minute: 0, second: 0 }); // Mulai jam ini, atur menit dan detik menjadi 00:00
+    let lastDay = startOfHour.subtract(1, 'day')
+    let formattedStartTime = lastDay.format('YYYY-MM-DD HH:mm:ss'); // Format waktu sesuai kebutuhan SQL
+    const startTime = new Date(formattedStartTime) 
+
     const result = {}
 
     const arr = [
@@ -250,7 +255,7 @@ async function getLatest24Hour(req, res) {
     let arrTotal = []
 
     for (const item of arr) {
-      const data = await get24HourLatestData({unitId: item.id})
+      const data = await get24HourLatestData({unitId: item.id, startTime})
   
       // Membuat objek untuk menyimpan hasil pengelompokan
       const groupedData = {};
