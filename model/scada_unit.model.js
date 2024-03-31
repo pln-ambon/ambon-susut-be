@@ -70,7 +70,7 @@ async function getDataEvery5Minutes({ unitId, startTime }) {
     const pool = await sql.connect(sqlConfig);
     const result = await pool.request()
       .input('unit_id', sql.Int, unitId)
-      .input('time', sql.Timestamp, startTime)
+      .input('time', sql.DateTime, startTime)
       .query(`
         SELECT *
         FROM SCADA_METER_2
