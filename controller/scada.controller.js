@@ -216,7 +216,7 @@ async function getDataGrafikbeban(req, res) {
       
         return acc;
       }
-      return;
+      return acc;
     }, {});
 
     let unitNames = []
