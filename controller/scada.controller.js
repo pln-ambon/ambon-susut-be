@@ -4,7 +4,8 @@ const {
   getAllScadaUnit,
   getAllScadaUnitMeter,
   get24HourLatestData,
-  getDataEvery5Minutes
+  getDataEvery5Minutes,
+  getAllDataGrafik
 } = require("../model/scada_unit.model")
 
 async function getAllUnit(req, res) {
@@ -202,10 +203,9 @@ async function getTableDetail(req, res) {
 async function getDataGrafikbeban(req, res) {
   try {
     
-    const data = await getAllScadaUnitMeter()
+    const data = await getAllDataGrafik()
 
     const groupedData = data.reduce((acc, obj) => {
-      if (obj.unit_id == 11 || obj.unit_id == 12 || obj.unit_id == 13 || obj.unit_id == 14) {
         const key = obj.unit_name;
         if (!acc[key]) {
           acc[key] = 0
@@ -215,8 +215,6 @@ async function getDataGrafikbeban(req, res) {
         acc[key] += obj.p / 1000
       
         return acc;
-      }
-      return acc;
     }, {});
 
     let unitNames = []
