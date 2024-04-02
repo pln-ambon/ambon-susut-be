@@ -205,15 +205,18 @@ async function getDataGrafikbeban(req, res) {
     const data = await getAllScadaUnitMeter()
 
     const groupedData = data.reduce((acc, obj) => {
-      const key = obj.unit_name;
-      if (!acc[key]) {
-        acc[key] = 0
+      if (obj.unit_id === 11 || obj.unit_id === 12 || obj.unit_id === 13 || obj.unit_id === 14) {
+        const key = obj.unit_name;
+        if (!acc[key]) {
+          acc[key] = 0
+        }
+  
+        // total
+        acc[key] += obj.p / 1000
+      
+        return acc;
       }
-
-      // total
-      acc[key] += obj.p / 1000
-    
-      return acc;
+      return;
     }, {});
 
     let unitNames = []
