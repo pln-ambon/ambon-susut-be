@@ -219,15 +219,26 @@ async function getDataGrafikbeban(req, res) {
 
     let unitNames = []
     let unitValue = []
+    let colors = []
+
+    const colors = {
+      "PLTD HATIVE KECIL": "#d4afb9",
+      "PLTD POKA": "#d1cfe2",
+      "PLTMG WAAI": "#9cadce",
+      "BMPP WAAI": "7ec4cf",
+    }
 
     for (let prop in groupedData) {
+      colors.push(colors[prop])
       unitNames.push(prop)
       unitValue.push(groupedData[prop])
     }
 
+
     res.status(200).json({
       unitNames,
-      unitValue
+      unitValue,
+      colors
     })
   } catch (error) {
     res.status(error?.code || 500 ).json(error)
