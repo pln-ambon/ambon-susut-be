@@ -221,7 +221,7 @@ async function getDataGrafikbeban(req, res) {
     let unitValue = []
     let colors = []
 
-    const colors = {
+    const objColors = {
       "PLTD HATIVE KECIL": "#d4afb9",
       "PLTD POKA": "#d1cfe2",
       "PLTMG WAAI": "#9cadce",
@@ -229,7 +229,7 @@ async function getDataGrafikbeban(req, res) {
     }
 
     for (let prop in groupedData) {
-      colors.push(colors[prop])
+      colors.push(objColors[prop])
       unitNames.push(prop)
       unitValue.push(groupedData[prop])
     }
