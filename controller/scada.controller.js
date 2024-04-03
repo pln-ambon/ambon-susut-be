@@ -225,7 +225,7 @@ async function getDataGrafikbeban(req, res) {
       "PLTD HATIVE KECIL": "#d4afb9",
       "PLTD POKA": "#d1cfe2",
       "PLTMG WAAI": "#9cadce",
-      "BMPP WAAI": "7ec4cf",
+      "BMPP WAAI": "#7ec4cf",
     }
 
     for (let prop in groupedData) {
