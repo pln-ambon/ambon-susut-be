@@ -403,7 +403,7 @@ async function getLatest24HourEvery5Minute(req, res) {
       const datasets = []
   
       for (const key in groupedData ) {
-        const total = groupedData[key].reduce((total, current) => total + current.p?.toFixed(0), 0);
+        const total = groupedData[key].reduce((total, current) => total + current.p, 0);
         labels.push(key)
         datasets.push(total)
       }
