@@ -103,9 +103,12 @@ async function getTableTotal(req, res) {
 
     data?.forEach(val => {
 
-      daya += (val.p || 0) / 1000 // MW
-      dmp += (val.p_dmp || 0) / 1000 // MW
-      susut += val.susut || 0
+      if (val.unit_id[0] === 11 || val.unit_id[0] === 12 || val.unit_id[0] === 13 || val.unit_id[0] === 14) {
+        daya += (val.p || 0) / 1000 // MW
+        dmp += (val.p_dmp || 0) / 1000 // MW
+        susut += val.susut || 0
+      }
+
       if (val.v) {
         voltage += val.v || 0
         curent += val.i || 0
@@ -196,12 +199,14 @@ async function getTableDetail(req, res) {
       })
 
       // grandTotal
-      grandTotal.p += obj.p / 1000
-      grandTotal.p_dmp_netto += obj.p_dmp_netto / 1000
-      grandTotal.p_dmp_pasok += obj.p_dmp_pasok / 1000
-      grandTotal.vTotal += obj.v
-      if (obj.v) {
-        grandTotal.vLength += 1
+      if (obj.unit_id[0] === 11 || obj.unit_id[0] === 12 || obj.unit_id[0] === 13 || obj.unit_id[0] === 14) {
+        grandTotal.p += obj.p / 1000
+        grandTotal.p_dmp_netto += obj.p_dmp_netto / 1000
+        grandTotal.p_dmp_pasok += obj.p_dmp_pasok / 1000
+        grandTotal.vTotal += obj.v
+        if (obj.v) {
+          grandTotal.vLength += 1
+        }
       }
     
       return acc;
