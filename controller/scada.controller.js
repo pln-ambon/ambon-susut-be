@@ -65,9 +65,9 @@ async function getDataMap(req, res) {
       }
 
       acc[key].pTotal += obj.p / 1000 // MW
-      acc[key].vTotal += obj.v
-      acc[key].fTotal += obj.f
       if (obj.v) {
+        acc[key].vTotal += obj.v
+        acc[key].fTotal += obj.f
         acc[key].vLength += 1
       }
       acc[key].vAverage = acc[key].vTotal / acc[key].vLength
@@ -97,17 +97,31 @@ async function getTableTotal(req, res) {
     let freq = 0
     let susut = 0
     let dataNotNull = 0
+    let dataFreq = 0
+    let passo1 = 0
+    let passo2 = 0
 
     data?.forEach(val => {
       daya += (val.p || 0) / 1000 // MW
       dmp += (val.p_dmp || 0) / 1000 // MW
-      voltage += val.v || 0
-      curent += val.i || 0
-      cos_phi += val.pf || 0
-      freq += val.f || 0
       susut += val.susut || 0
       if (val.v) {
+        voltage += val.v || 0
+        curent += val.i || 0
         dataNotNull += 1
+      }
+      
+      if (val.unit_id === 51 && (unit_subname === "150-PLTMG TRAFO1" || unit_subname === "150-PLTMG TRAFO2")) {
+        freq += val.f || 0
+        cos_phi += val.pf || 0
+      }
+
+      if (val.unit_id === 51 && unit_subname === "150-LINE1") {
+        passo1 += val.i || 0
+      }
+
+      if (val.unit_id === 51 && unit_subname === "150-LINE2") {
+        passo2 += val.i || 0
       }
     })
 
@@ -116,8 +130,10 @@ async function getTableTotal(req, res) {
       dmp,
       voltage: voltage / dataNotNull,
       curent: curent / dataNotNull,
-      cos_phi: cos_phi / dataNotNull,
-      freq: freq / dataNotNull,
+      cos_phi: cos_phi / 2,
+      freq: freq / 2,
+      passo1,
+      passo2,
       susut,
     }
 
