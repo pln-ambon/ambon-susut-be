@@ -111,16 +111,16 @@ async function getTableTotal(req, res) {
         dataNotNull += 1
       }
       
-      if (val.unit_id === 51 && (unit_subname === "150-PLTMG TRAFO1" || unit_subname === "150-PLTMG TRAFO2")) {
+      if (val.unit_id[0] === 51 && (unit_subname === "150-PLTMG TRAFO1" || unit_subname === "150-PLTMG TRAFO2")) {
         freq += val.f || 0
         cos_phi += val.pf || 0
       }
 
-      if (val.unit_id === 51 && unit_subname === "150-LINE1") {
+      if (val.unit_id[0] === 51 && unit_subname === "150-LINE1") {
         passo1 += val.i || 0
       }
 
-      if (val.unit_id === 51 && unit_subname === "150-LINE2") {
+      if (val.unit_id[0] === 51 && unit_subname === "150-LINE2") {
         passo2 += val.i || 0
       }
     })
