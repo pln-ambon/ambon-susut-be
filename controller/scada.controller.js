@@ -411,7 +411,7 @@ async function getLatest24HourEvery5Minute(req, res) {
         // if (key === "2024-04-04 13:23") {
         //   console.log(groupedData[key], "<< supicius");
         // }
-        const total = groupedData[key].reduce((total, current) => total + current.p, 0);
+        const total = groupedData[key].reduce((total, current) => total + Math.round(current.p), 0);
         labels.push(key)
         datasets.push(total)
       }
