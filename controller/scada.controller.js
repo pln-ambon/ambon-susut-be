@@ -393,7 +393,7 @@ async function getLatest24HourEvery5Minute(req, res) {
       data.forEach(item => {
           // Membuat kunci untuk pengelompokan berdasarkan unit_id dan time
           const time = moment(item.time)
-          const key = time.utc().format("YYYY-MM-DD HH:mm")
+          const key = time.utc().format("MM-DD HH:mm:ss")
   
           // Jika kunci belum ada di objek groupedData, inisialisasi dengan array kosong
           if (!groupedData[key]) {
@@ -408,9 +408,9 @@ async function getLatest24HourEvery5Minute(req, res) {
       const datasets = []
   
       for (const key in groupedData ) {
-        if (key === "2024-04-04 13:23") {
-          console.log(groupedData[key], "<< supicius");
-        }
+        // if (key === "2024-04-04 13:23") {
+        //   console.log(groupedData[key], "<< supicius");
+        // }
         const total = groupedData[key].reduce((total, current) => total + current.p, 0);
         labels.push(key)
         datasets.push(total)
