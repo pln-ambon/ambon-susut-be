@@ -102,6 +102,7 @@ async function getTableTotal(req, res) {
     let passo2 = 0
 
     data?.forEach(val => {
+
       daya += (val.p || 0) / 1000 // MW
       dmp += (val.p_dmp || 0) / 1000 // MW
       susut += val.susut || 0
@@ -111,16 +112,16 @@ async function getTableTotal(req, res) {
         dataNotNull += 1
       }
       
-      if (val.unit_id[0] === 51 && (unit_subname === "150-PLTMG TRAFO1" || unit_subname === "150-PLTMG TRAFO2")) {
+      if (val.unit_id[0] === 51 && (val.unit_subname === "150-PLTMG TRAFO1" || val.unit_subname === "150-PLTMG TRAFO2")) {
         freq += val.f || 0
         cos_phi += val.pf || 0
       }
 
-      if (val.unit_id[0] === 51 && unit_subname === "150-LINE1") {
+      if (val.unit_id[0] === 51 && val.unit_subname === "150-LINE1") {
         passo1 += val.i || 0
       }
 
-      if (val.unit_id[0] === 51 && unit_subname === "150-LINE2") {
+      if (val.unit_id[0] === 51 && val.unit_subname === "150-LINE2") {
         passo2 += val.i || 0
       }
     })
