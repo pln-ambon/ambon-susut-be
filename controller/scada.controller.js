@@ -58,7 +58,7 @@ async function getDataMap(req, res) {
           fAverage: 0,
         }
       }
-
+      console.log(obj, "<< obj");
       // set time 
       if (!time) {
         time = obj.time
