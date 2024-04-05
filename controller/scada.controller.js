@@ -64,14 +64,53 @@ async function getDataMap(req, res) {
         time = obj.time
       }
 
-      acc[key].pTotal += obj.p / 1000 // MW
-      if (obj.v) {
-        acc[key].vTotal += obj.v
-        acc[key].fTotal += obj.f
-        acc[key].vLength += 1
+      if (obj.unit_id === 11 || obj.unit_id === 12 || obj.unit_id === 13 || obj.unit_id === 14) {
+        acc[key].pTotal += obj.p / 1000 // MW
+        if (obj.v) {
+          acc[key].vTotal += obj.v
+          acc[key].fTotal += obj.f
+          acc[key].vLength += 1
+        }
+        acc[key].vAverage = acc[key].vTotal / acc[key].vLength
+        acc[key].fAverage = acc[key].fTotal / acc[key].vLength
       }
-      acc[key].vAverage = acc[key].vTotal / acc[key].vLength
-      acc[key].fAverage = acc[key].fTotal / acc[key].vLength
+
+      // GI WAAI
+      if (obj.unit_id === 51 && (obj.unit_subname === "150-LINE1" || obj.unit_subname === "150-LINE2")) {
+        acc[key].pTotal += obj.p / 1000 // MW
+        if (obj.v) {
+          acc[key].vTotal += obj.v
+          acc[key].fTotal += obj.f
+          acc[key].vLength += 1
+        }
+        acc[key].vAverage = acc[key].vTotal / acc[key].vLength
+        acc[key].fAverage = acc[key].fTotal / acc[key].vLength
+      }
+
+      // // GI HATIVE BESAR
+      // if (obj.unit_id === 55 && (obj.unit_subname === "150-WAYAME1" || obj.unit_subname === "150-WAYAME2")) {
+      //   acc[key].pTotal += obj.p / 1000 // MW
+      //   if (obj.v) {
+      //     acc[key].vTotal += obj.v
+      //     acc[key].fTotal += obj.f
+      //     acc[key].vLength += 1
+      //   }
+      //   acc[key].vAverage = acc[key].vTotal / acc[key].vLength
+      //   acc[key].fAverage = acc[key].fTotal / acc[key].vLength
+      // }
+
+
+      // // GI SIRIMAU
+      // if (obj.unit_id === 54 && (obj.unit_subname === "150-WAYAME1" || obj.unit_subname === "150-WAYAME2")) {
+      //   acc[key].pTotal += obj.p / 1000 // MW
+      //   if (obj.v) {
+      //     acc[key].vTotal += obj.v
+      //     acc[key].fTotal += obj.f
+      //     acc[key].vLength += 1
+      //   }
+      //   acc[key].vAverage = acc[key].vTotal / acc[key].vLength
+      //   acc[key].fAverage = acc[key].fTotal / acc[key].vLength
+      // }
     
       return acc;
     }, {});
