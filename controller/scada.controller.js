@@ -58,13 +58,12 @@ async function getDataMap(req, res) {
           fAverage: 0,
         }
       }
-      console.log(obj, "<< obj");
       // set time 
       if (!time) {
         time = obj.time
       }
 
-      if (obj.unit_id === 11 || obj.unit_id === 12 || obj.unit_id === 13 || obj.unit_id === 14) {
+      if (obj.unit_id[0] === 11 || obj.unit_id[0] === 12 || obj.unit_id[0] === 13 || obj.unit_id[0] === 14) {
         acc[key].pTotal += obj.p / 1000 // MW
         if (obj.v) {
           acc[key].vTotal += obj.v
@@ -76,7 +75,7 @@ async function getDataMap(req, res) {
       }
 
       // GI WAAI
-      if (obj.unit_id === 51 && (obj.unit_subname === "150-LINE1" || obj.unit_subname === "150-LINE2")) {
+      if (obj.unit_id[0] === 51 && (obj.unit_subname === "150-LINE1" || obj.unit_subname === "150-LINE2")) {
         acc[key].pTotal += obj.p / 1000 // MW
         if (obj.v) {
           acc[key].vTotal += obj.v
