@@ -57,6 +57,10 @@ async function getDataMap(req, res) {
           vAverage: 0,
           fTotal: 0,
           fAverage: 0,
+          current1: 0,
+          current2: 0,
+          current3: 0, // GIS PASSO - SIRIMAU 1
+          current4: 0, // GIS PASSO - SIRIMAU 2
         }
       }
       // set time 
@@ -83,6 +87,15 @@ async function getDataMap(req, res) {
           acc[key].fTotal += obj.f
           acc[key].vLength += 1
         }
+
+        if (obj.unit_subname === "150-LINE1") {
+          acc[key].current1 += obj.i
+        }
+
+        if (obj.unit_subname === "150-LINE2") {
+          acc[key].current2 += obj.i
+        }
+
         acc[key].vAverage = acc[key].vTotal / acc[key].vLength
         acc[key].fAverage = acc[key].fTotal / acc[key].vLength
       }
@@ -113,7 +126,7 @@ async function getDataMap(req, res) {
       }
     
 
-      // GI PASSO
+      // GIS PASSO
       if (obj.unit_id[0] === 53 && (obj.unit_subname === "150-TRAFO1" || obj.unit_subname === "150-TRAFO2")) {
         acc[key].pTotal += obj.p / 1000 // MW
         if (obj.v) {
@@ -121,8 +134,25 @@ async function getDataMap(req, res) {
           acc[key].fTotal += obj.f
           acc[key].vLength += 1
         }
+
         acc[key].vAverage = acc[key].vTotal / acc[key].vLength
         acc[key].fAverage = acc[key].fTotal / acc[key].vLength
+      }
+
+      if (obj.unit_id[0] === 53 && obj.unit_subname === "150-WAYAME1") {
+        acc[key].current1 += obj.i
+      }
+
+      if (obj.unit_id[0] === 53 && obj.unit_subname === "150-WAYAME2") {
+        acc[key].current2 += obj.i
+      }
+
+      if (obj.unit_id[0] === 53 && obj.unit_subname === "150-SIRIMAU1") {
+        acc[key].current3 += obj.i
+      }
+
+      if (obj.unit_id[0] === 53 && obj.unit_subname === "150-SIRIMAU2") {
+        acc[key].current4 += obj.i
       }
     
       return acc;
