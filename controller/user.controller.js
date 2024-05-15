@@ -47,7 +47,7 @@ async function login(req, res) {
        });
       
     } catch (error) {
-      res.status(error?.code || 500 ).json(error)
+      res.status(500).json(error)
     }
   }
 

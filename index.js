@@ -14,6 +14,11 @@ app.use("/api/v1", router)
 const { generateToken } = require("./utils/jwt")
 const { authentication } = require("./middleware/authentication")
 
+// Healthy check
+app.get('/', (req, res) => {
+  res.json({ message: 'Healthy check' });
+});
+
 // Logout route
 app.post('/auth/logout', (req, res) => {
   // Clear the token cookie

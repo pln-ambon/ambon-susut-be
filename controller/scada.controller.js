@@ -16,7 +16,7 @@ async function getAllUnit(req, res) {
 
     res.status(200).json(units)
   } catch (error) {
-    res.status(error?.code || 500 ).json(error)
+    res.status(500).json(error)
   }
 }
 
@@ -36,7 +36,7 @@ async function getAllUnitMeter(req, res) {
 
     res.status(200).json(groupedData)
   } catch (error) {
-    res.status(error?.code || 500 ).json(error)
+    res.status(500).json(error)
   }
 }
 
@@ -162,7 +162,7 @@ async function getDataMap(req, res) {
 
     res.status(200).json(groupedData)
   } catch (error) {
-    res.status(error?.code || 500 ).json(error)
+    res.status(500).json(error)
   }
 }
 
@@ -228,7 +228,7 @@ async function getTableTotal(req, res) {
     res.status(200).json(result)
     // res.status(200).json("SUccessSS")
   } catch (error) {
-    res.status(error?.code || 500 ).json(error)
+    res.status(500).json(error)
   }
 }
 
@@ -302,7 +302,7 @@ async function getTableDetail(req, res) {
 
     res.status(200).json(groupedData)
   } catch (error) {
-    res.status(error?.code || 500 ).json(error)
+    res.status(500).json(error)
   }
 }
 
@@ -347,7 +347,7 @@ async function getDataGrafikbeban(req, res) {
       colors
     })
   } catch (error) {
-    res.status(error?.code || 500 ).json(error)
+    res.status(500).json(error)
   }
 }
 
@@ -432,7 +432,7 @@ async function getLatest24Hour(req, res) {
 
     res.status(200).json(result)
   } catch (error) {
-    res.status(error?.code || 500 ).json(error)
+    res.status(500).json(error)
   }
 }
 
@@ -520,7 +520,7 @@ async function getLatest24HourEvery5Minute(req, res) {
 
     res.status(200).json(result)
   } catch (error) {
-    res.status(error?.code || 500 ).json(error)
+    res.status(500).json(error)
   }
 }
 
@@ -611,7 +611,7 @@ async function getLatest24HourEvery5Minute(req, res) {
 
 //     res.status(200).json(result)
 //   } catch (error) {
-//     res.status(error?.code || 500 ).json(error)
+//     res.status(500).json(error)
 //   }
 // }
 
