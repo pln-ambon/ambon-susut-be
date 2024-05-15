@@ -16,7 +16,7 @@ const config = {
     password: DB_PASSWORD,
     database: DB_NAME,
     server: DB_SERVER,
-    port: DB_PORT,
+    port: Number(DB_PORT),
     pool: {
       max: 10,
       min: 1,
