@@ -5,16 +5,12 @@ const { sqlConfig } =require("../config")
 
 async function getUserByEmail({ email }) {
   try {
-    console.log(sqlConfig, "<< config");
     const pool = await sql.connect(sqlConfig);
-    console.log(pool, "<< pool");
     const result = await pool.request()
       .input('email', sql.NVarChar, email)
       .query('SELECT * FROM SCADA_USER WHERE email = @email');
-    console.log(result, "<< result");
     return result.recordset?.[0];
   } catch (error) {
-    console.log(error, "<< error");
     throw error;
   }
 }
