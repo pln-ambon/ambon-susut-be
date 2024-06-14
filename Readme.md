@@ -6,7 +6,7 @@ PLN Ambon Web Monitoring
 
 Ensure that your computer has the following installed:
 
-- Node.js v14.x
+- Node.js v14.x and above
 
 ## Installation
 
@@ -27,6 +27,18 @@ To run the application, use one of the following commands:
 1. Production mode
 ```
 npm run start
+```
+
+If you want to run the application using pm2, please install pm2 on your server
+
+```
+  npm install -g pm2
+```
+
+running application
+
+```
+  pm2 start index.js --name <name of service>
 ```
 
 2. Development mode
