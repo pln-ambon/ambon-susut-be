@@ -1,44 +1,10 @@
 const moment = require("moment")
 
 const {
-  getAllScadaUnit,
   getAllScadaUnitMeter,
-  get24HourLatestData,
-  getDataEvery5Minutes,
   getAllDataGrafik,
   getDataEveryMinutes
 } = require("../model/scada_unit.model")
-
-async function getAllUnit(req, res) {
-  try {
-    
-    const units = await getAllScadaUnit()
-
-    res.status(200).json(units)
-  } catch (error) {
-    res.status(500).json(error)
-  }
-}
-
-async function getAllUnitMeter(req, res) {
-  try {
-    
-    const data = await getAllScadaUnitMeter()
-
-    const groupedData = data.reduce((acc, obj) => {
-      const key = obj.unit_name;
-      if (!acc[key]) {
-        acc[key] = [];
-      }
-      acc[key].push(obj);
-      return acc;
-    }, {});
-
-    res.status(200).json(groupedData)
-  } catch (error) {
-    res.status(500).json(error)
-  }
-}
 
 async function getDataMap(req, res) {
   try {
@@ -232,7 +198,6 @@ async function getTableTotal(req, res) {
   }
 }
 
-
 async function getTableDetail(req, res) {
   try {
     
@@ -351,92 +316,7 @@ async function getDataGrafikbeban(req, res) {
   }
 }
 
-async function getLatest24Hour(req, res) {
-  try {
-
-    let startOfHour = moment().startOf('hour').set({ minute: 0, second: 0 }); // Mulai jam ini, atur menit dan detik menjadi 00:00
-    let lastDay = startOfHour.subtract(1, 'day')
-    let formattedStartTime = lastDay.format('YYYY-MM-DD HH:mm:ss'); // Format waktu sesuai kebutuhan SQL
-    const startTime = new Date(formattedStartTime) 
-
-    const result = {}
-
-    const arr = [
-      {
-        id: 11,
-        name: "PLTMG WAAI"
-      },
-      {
-        id: 12,
-        name: "BMPP WAAI"
-      },
-      {
-        id: 13,
-        name: "PLTD POKA"
-      },
-      {
-        id: 14,
-        name: "PLTD HATIVE KECIL"
-      },
-    ]
-
-    let arrTotal = []
-
-    for (const item of arr) {
-      const data = await get24HourLatestData({unitId: item.id, startTime})
-  
-      // Membuat objek untuk menyimpan hasil pengelompokan
-      const groupedData = {};
-  
-      // Iterasi melalui array data
-      data.forEach(item => {
-          // Membuat kunci untuk pengelompokan berdasarkan unit_id dan time
-          const time = moment(item.time)
-          const key = time.utc().format("YYYY-MM-DD HH:mm")
-  
-          // Jika kunci belum ada di objek groupedData, inisialisasi dengan array kosong
-          if (!groupedData[key]) {
-              groupedData[key] = [];
-          }
-  
-          // Memasukkan item ke dalam array yang sesuai dengan kunci
-          groupedData[key].push(item);
-      });
-  
-      const labels = []
-      const datasets = []
-  
-      for (const key in groupedData ) {
-        const total = groupedData[key].reduce((total, current) => total + current.p, 0);
-        labels.push(key)
-        datasets.push(total)
-      }
-
-      if (!arrTotal?.length) {
-        arrTotal = [...datasets]
-      } else {
-        arrTotal.forEach((item, idx) => {
-          arrTotal[idx] += datasets[idx]
-        })
-      }
-
-      result[item.name] = {
-        labels,
-        datasets
-      }
-
-    }
-
-    // calculate total
-    result.arrTotal = arrTotal
-
-    res.status(200).json(result)
-  } catch (error) {
-    res.status(500).json(error)
-  }
-}
-
-async function getLatest24HourEvery5Minute(req, res) {
+async function getLatest24HourEveryMinute(req, res) {
   try {
 
     // let startOfHour = moment().utc().startOf('hour').set({ minute: 0, second: 0 }); // Mulai jam ini, atur menit dan detik menjadi 00:00
@@ -468,7 +348,7 @@ async function getLatest24HourEvery5Minute(req, res) {
     let arrTotal = []
 
     for (const item of arr) {
-      const data = await getDataEvery5Minutes({unitId: item.id})
+      const data = await getDataEveryMinutes({unitId: item.id})
   
       // Membuat objek untuk menyimpan hasil pengelompokan
       const groupedData = {};
@@ -524,104 +404,10 @@ async function getLatest24HourEvery5Minute(req, res) {
   }
 }
 
-// async function getLatest24HourEveryMinute(req, res) {
-//   try {
-
-//     // let startOfHour = moment().utc().startOf('hour').set({ minute: 0, second: 0 }); // Mulai jam ini, atur menit dan detik menjadi 00:00
-//     // let lastDay = startOfHour.utc().subtract(1, 'day')
-//     // let formattedStartTime = lastDay.utc().format('YYYY-MM-DD HH:mm:ss'); // Format waktu sesuai kebutuhan SQL
-//     // // const startTime = new Date(formattedStartTime) 
-
-//     const result = {}
-
-//     const arr = [
-//       {
-//         id: 11,
-//         name: "PLTMG WAAI"
-//       },
-//       {
-//         id: 12,
-//         name: "BMPP WAAI"
-//       },
-//       {
-//         id: 13,
-//         name: "PLTD POKA"
-//       },
-//       {
-//         id: 14,
-//         name: "PLTD HATIVE KECIL"
-//       },
-//     ]
-
-//     let arrTotal = []
-
-//     const allData = await getDataEveryMinutes()
-
-//     for (const item of arr) {
-      
-//       const data = allData.filter(i => i.unit_id == item.id)
-
-//       // Membuat objek untuk menyimpan hasil pengelompokan
-//       const groupedData = {};
-  
-//       // Iterasi melalui array data
-//       data.forEach(item => {
-//           // Membuat kunci untuk pengelompokan berdasarkan unit_id dan time
-//           const time = moment(item.time)
-//           const key = time.utc().format("DD MMM HH:mm:ss")
-  
-//           // Jika kunci belum ada di objek groupedData, inisialisasi dengan array kosong
-//           if (!groupedData[key]) {
-//               groupedData[key] = [];
-//           }
-  
-//           // Memasukkan item ke dalam array yang sesuai dengan kunci
-//           groupedData[key].push(item);
-//       });
-  
-//       const labels = []
-//       const datasets = []
-  
-//       for (const key in groupedData ) {
-//         // if (key === "2024-04-04 13:23") {
-//         //   console.log(groupedData[key], "<< supicius");
-//         // }
-//         const total = groupedData[key].reduce((total, current) => total + Math.round(current.p), 0);
-//         labels.push(key)
-//         datasets.push(total)
-//       }
-
-//       if (!arrTotal?.length) {
-//         arrTotal = [...datasets]
-//       } else {
-//         arrTotal.forEach((item, idx) => {
-//           arrTotal[idx] += datasets[idx]
-//         })
-//       }
-
-//       result[item.name] = {
-//         labels,
-//         datasets
-//       }
-
-//     }
-
-//     // calculate total
-//     result.arrTotal = arrTotal
-
-//     res.status(200).json(result)
-//   } catch (error) {
-//     res.status(500).json(error)
-//   }
-// }
-
 module.exports = {
-  getAllUnit,
-  getAllUnitMeter,
   getDataMap,
   getTableTotal,
   getTableDetail,
   getDataGrafikbeban,
-  getLatest24Hour,
-  getLatest24HourEvery5Minute
+  getLatest24HourEveryMinute
 }
