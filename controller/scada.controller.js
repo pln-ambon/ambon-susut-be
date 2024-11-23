@@ -3,7 +3,8 @@ const moment = require("moment")
 const {
   getAllScadaUnitMeter,
   getAllDataGrafik,
-  getDataEveryMinutes
+  getDataEveryMinutes,
+  getLastSpiningAndReserve
 } = require("../model/scada_unit.model")
 
 async function getDataMap(req, res) {
@@ -137,6 +138,8 @@ async function getTableTotal(req, res) {
     
     const data = await getAllScadaUnitMeter()
 
+    const spinningAndReserveData = await getLastSpiningAndReserve()
+
     let daya = 0
     let dmp = 0
     let voltage = 0
@@ -187,12 +190,13 @@ async function getTableTotal(req, res) {
       passo1,
       passo2,
       susut,
+      spinningReserve: spinningAndReserveData.spinning,
+      reserveMargin: spinningAndReserveData.reverse
     }
 
     // Reserve Margin (%) = (DMP-Beban)/Beban
 
     res.status(200).json(result)
-    // res.status(200).json("SUccessSS")
   } catch (error) {
     res.status(500).json(error)
   }
@@ -322,7 +326,6 @@ async function getLatest24HourEveryMinute(req, res) {
     // let startOfHour = moment().utc().startOf('hour').set({ minute: 0, second: 0 }); // Mulai jam ini, atur menit dan detik menjadi 00:00
     // let lastDay = startOfHour.utc().subtract(1, 'day')
     // let formattedStartTime = lastDay.utc().format('YYYY-MM-DD HH:mm:ss'); // Format waktu sesuai kebutuhan SQL
-    // // const startTime = new Date(formattedStartTime) 
 
     const result = {}
 
@@ -364,7 +367,7 @@ async function getLatest24HourEveryMinute(req, res) {
               groupedData[key] = [];
           }
   
-          // Memasukkan item ke dalam array yang sesuai dengan kunci
+          // push item ke dalam array yang sesuai dengan kunci
           groupedData[key].push(item);
       });
   
@@ -372,9 +375,6 @@ async function getLatest24HourEveryMinute(req, res) {
       const datasets = []
   
       for (const key in groupedData ) {
-        // if (key === "2024-04-04 13:23") {
-        //   console.log(groupedData[key], "<< supicius");
-        // }
         const total = groupedData[key].reduce((total, current) => total + Math.round(current.p), 0);
         labels.push(key)
         datasets.push(total)
