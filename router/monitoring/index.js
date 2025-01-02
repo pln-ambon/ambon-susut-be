@@ -5,7 +5,9 @@ const {
   getTableDetail,
   getDataGrafikbeban,
   getLatest24HourEveryMinute,
-  getDataMapTernate
+  getDataMapTernate,
+  getDataGrafikbebanTernate,
+  getTableTotalTernate
 } = require("../../controller/scada.controller")
 
 
@@ -17,6 +19,9 @@ router.get("/24-hour", getLatest24HourEveryMinute)
 
 // ternate
 router.get("/ternate/data-map", getDataMapTernate)
+router.get("/ternate/grafik-beban", getDataGrafikbebanTernate)
+router.get("/ternate/total-table", getTableTotalTernate)
+
 
 
 module.exports = router

@@ -440,7 +440,7 @@ async function getDataMapTernate(req, res) {
        */
 
       if (obj.unit_id[0] === 101 || obj.unit_id[0] === 102 || obj.unit_id[0] === 103 || obj.unit_id[0] === 104) {
-        acc[key].pTotal += obj.p / 1000 // MW
+        acc[key].pTotal += Math.abs(obj.p) / 1000 // MW
         if (obj.v) {
           acc[key].vTotal += obj.v
           acc[key].fTotal += obj.f
@@ -452,7 +452,7 @@ async function getDataMapTernate(req, res) {
 
       // 152 => GIS KAYU MERAH/GIS TERNATE
       if (obj.unit_id[0] === 152 && (obj.unit_subname === "150-TRAFO1" || obj.unit_subname === "150-TRAFO2")) {
-        acc[key].pTotal += obj.p / 1000 // MW
+        acc[key].pTotal += Math.abs(obj.p) / 1000 // MW
         if (obj.v) {
           acc[key].vTotal += obj.v
           acc[key].fTotal += obj.f
@@ -465,7 +465,7 @@ async function getDataMapTernate(req, res) {
 
       // 151 => GI KASTELA
       if (obj.unit_id[0] === 151 && (obj.unit_subname === "150-TRAFO1" || obj.unit_subname === "150-TRAFO2")) {
-        acc[key].pTotal += obj.p / 1000 // MW
+        acc[key].pTotal += Math.abs(obj.p) / 1000 // MW
         if (obj.v) {
           acc[key].vTotal += obj.v
           acc[key].fTotal += obj.f
@@ -495,11 +495,127 @@ async function getDataMapTernate(req, res) {
   }
 } 
 
+async function getDataGrafikbebanTernate(req, res) {
+  try {
+    
+    const data = await getAllDataGrafik()
+
+    const groupedData = data.reduce((acc, obj) => {
+        const key = obj.unit_name;
+        if (!acc[key]) {
+          acc[key] = 0
+        }
+  
+        // total
+        acc[key] += Math.abs(obj.p) / 1000
+      
+        return acc;
+    }, {});
+
+    let unitNames = []
+    let unitValue = []
+    let colors = []
+
+    const objColors = {
+      "PLTMG KASTELA": "#d4afb9",
+      "PLTD SEWA": "#d1cfe2",
+      "PLTD KAYU MERAH": "#9cadce",
+      "PLTU TIDORE": "#7ec4cf",
+    }
+
+    for (let prop in groupedData) {
+      colors.push(objColors[prop])
+      unitNames.push(prop)
+      unitValue.push(groupedData[prop])
+    }
+
+
+    res.status(200).json({
+      unitNames,
+      unitValue,
+      colors
+    })
+  } catch (error) {
+    res.status(500).json(error)
+  }
+}
+
+async function getTableTotalTernate(req, res) {
+  try {
+    
+    const data = await getAllScadaUnitMeter()
+
+    const spinningAndReserveData = await getLastSpiningAndReserve()
+
+    let daya = 0
+    let dmp = 0
+    let voltage = 0
+    let curent = 0
+    let cos_phi = 0
+    let freq = 0
+    let susut = 0
+    let dataNotNull = 0
+    let dataFreq = 0
+    let passo1 = 0
+    let passo2 = 0
+
+    data?.forEach(val => {
+
+      if (val.unit_id[0] === 101 || val.unit_id[0] === 102 || val.unit_id[0] === 103 || val.unit_id[0] === 104) {
+        daya += (Math.abs(val.p) || 0) / 1000 // MW
+        dmp += (Math.abs(val.p_dmp) || 0) / 1000 // MW
+        susut += val.susut || 0
+      }
+
+      if (val.v) {
+        voltage += val.v || 0
+        curent += val.i || 0
+        dataNotNull += 1
+      }
+      
+      if (val.unit_id[0] === 151 && (val.unit_subname === "150-PLTMG TRAFO1" || val.unit_subname === "150-PLTMG TRAFO2")) {
+        freq += val.f || 0
+        cos_phi += val.pf || 0
+      }
+
+      if (val.unit_id[0] === 151 && val.unit_subname === "150-LINE1") {
+        passo1 += val.i || 0
+      }
+
+      if (val.unit_id[0] === 151 && val.unit_subname === "150-LINE2") {
+        passo2 += val.i || 0
+      }
+    })
+
+    const result = {
+      daya,
+      dmp,
+      voltage: voltage / dataNotNull,
+      curent: curent / dataNotNull,
+      cos_phi: cos_phi / 2,
+      freq: freq / 2,
+      passo1,
+      passo2,
+      susut,
+      spinningReserve: spinningAndReserveData.spinning,
+      reserveMargin: spinningAndReserveData.reverse
+    }
+
+    // Reserve Margin (%) = (DMP-Beban)/Beban
+
+    res.status(200).json(result)
+  } catch (error) {
+    res.status(500).json(error)
+  }
+}
+
 module.exports = {
   getDataMap,
   getTableTotal,
   getTableDetail,
   getDataGrafikbeban,
   getLatest24HourEveryMinute,
-  getDataMapTernate
+  getDataMapTernate,
+  getDataGrafikbebanTernate,
+  getTableTotalTernate
 }
