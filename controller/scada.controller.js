@@ -404,10 +404,102 @@ async function getLatest24HourEveryMinute(req, res) {
   }
 }
 
+async function getDataMapTernate(req, res) {
+  try {
+    
+    const data = await getAllScadaUnitMeter()
+
+    let time
+
+    const groupedData = data.reduce((acc, obj) => {
+      const key = obj.unit_name;
+      if (!acc[key]) {
+        acc[key] = {
+          pTotal: 0,
+          vTotal: 0,
+          vLength: 0,
+          vAverage: 0,
+          fTotal: 0,
+          fAverage: 0,
+          current1: 0,
+          current2: 0,
+          current3: 0, 
+          current4: 0,
+        }
+      }
+      // set time 
+      if (!time) {
+        time = obj.time
+      }
+      
+      /**
+       * 101 => PLTMG KASTELA
+       * 102 => PLTU TIDORE
+       * 103 => PLTD KAYU MERAH
+       * 104 => PLTD KASTELA
+       */
+
+      if (obj.unit_id[0] === 101 || obj.unit_id[0] === 102 || obj.unit_id[0] === 103 || obj.unit_id[0] === 104) {
+        acc[key].pTotal += obj.p / 1000 // MW
+        if (obj.v) {
+          acc[key].vTotal += obj.v
+          acc[key].fTotal += obj.f
+          acc[key].vLength += 1
+        }
+        acc[key].vAverage = acc[key].vTotal / acc[key].vLength
+        acc[key].fAverage = acc[key].fTotal / acc[key].vLength
+      }
+
+      // 152 => GIS KAYU MERAH/GIS TERNATE
+      if (obj.unit_id[0] === 152 && (obj.unit_subname === "150-TRAFO1" || obj.unit_subname === "150-TRAFO2")) {
+        acc[key].pTotal += obj.p / 1000 // MW
+        if (obj.v) {
+          acc[key].vTotal += obj.v
+          acc[key].fTotal += obj.f
+          acc[key].vLength += 1
+        }
+
+        acc[key].vAverage = acc[key].vTotal / acc[key].vLength
+        acc[key].fAverage = acc[key].fTotal / acc[key].vLength
+      }
+
+      // 151 => GI KASTELA
+      if (obj.unit_id[0] === 151 && (obj.unit_subname === "150-TRAFO1" || obj.unit_subname === "150-TRAFO2")) {
+        acc[key].pTotal += obj.p / 1000 // MW
+        if (obj.v) {
+          acc[key].vTotal += obj.v
+          acc[key].fTotal += obj.f
+          acc[key].vLength += 1
+        }
+
+        acc[key].vAverage = acc[key].vTotal / acc[key].vLength
+        acc[key].fAverage = acc[key].fTotal / acc[key].vLength
+      }
+
+      if (obj.unit_id[0] === 151 && obj.unit_subname === "150-LINE1") {
+        acc[key].current1 += obj.i
+      }
+
+      if (obj.unit_id[0] === 151 && obj.unit_subname === "150-LINE2") {
+        acc[key].current2 += obj.i
+      }
+
+      return acc;
+    }, {});
+
+    groupedData.date = moment(time).utc().locale('id').format('DD MMMM YYYY, HH:mm [WIT]')
+
+    res.status(200).json(groupedData)
+  } catch (error) {
+    res.status(500).json(error)
+  }
+} 
+
 module.exports = {
   getDataMap,
   getTableTotal,
   getTableDetail,
   getDataGrafikbeban,
-  getLatest24HourEveryMinute
+  getLatest24HourEveryMinute,
+  getDataMapTernate
 }
