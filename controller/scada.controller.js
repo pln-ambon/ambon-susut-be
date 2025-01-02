@@ -3,6 +3,7 @@ const moment = require("moment")
 const {
   getAllScadaUnitMeter,
   getAllDataGrafik,
+  getAllDataGrafikTernate,
   getDataEveryMinutes,
   getLastSpiningAndReserve
 } = require("../model/scada_unit.model")
@@ -498,7 +499,7 @@ async function getDataMapTernate(req, res) {
 async function getDataGrafikbebanTernate(req, res) {
   try {
     
-    const data = await getAllDataGrafik()
+    const data = await getAllDataGrafikTernate()
 
     const groupedData = data.reduce((acc, obj) => {
         const key = obj.unit_name;
