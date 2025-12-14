@@ -440,7 +440,19 @@ async function getDataMapTernate(req, res) {
        * 104 => PLTD KASTELA
        */
 
-      if (obj.unit_id[0] === 101 || obj.unit_id[0] === 102 || obj.unit_id[0] === 103 || obj.unit_id[0] === 104) {
+      // if (obj.unit_id[0] === 101 || obj.unit_id[0] === 102 || obj.unit_id[0] === 103 || obj.unit_id[0] === 104) {
+      //   acc[key].pTotal += Math.abs(obj.p) / 1000 // MW
+      //   if (obj.v) {
+      //     acc[key].vTotal += obj.v
+      //     acc[key].fTotal += obj.f
+      //     acc[key].vLength += 1
+      //   }
+      //   acc[key].vAverage = acc[key].vTotal / acc[key].vLength
+      //   acc[key].fAverage = acc[key].fTotal / acc[key].vLength
+      // }
+
+      // 102 => PLTU TIDORE
+      if (obj.unit_id[0] === 102 && (obj.unit_subname === "GEN1" || obj.unit_subname === "GEN2")) {
         acc[key].pTotal += Math.abs(obj.p) / 1000 // MW
         if (obj.v) {
           acc[key].vTotal += obj.v
@@ -450,6 +462,7 @@ async function getDataMapTernate(req, res) {
         acc[key].vAverage = acc[key].vTotal / acc[key].vLength
         acc[key].fAverage = acc[key].fTotal / acc[key].vLength
       }
+
 
       // 152 => GIS KAYU MERAH/GIS TERNATE
       if (obj.unit_id[0] === 152 && (obj.unit_subname === "150-TRAFO1" || obj.unit_subname === "150-TRAFO2")) {
@@ -562,11 +575,11 @@ async function getTableTotalTernate(req, res) {
 
     data?.forEach(val => {
 
-      if (val.unit_id[0] === 101 || val.unit_id[0] === 102 || val.unit_id[0] === 103 || val.unit_id[0] === 104) {
-        daya += (Math.abs(val.p) || 0) / 1000 // MW
-        dmp += (Math.abs(val.p_dmp) || 0) / 1000 // MW
-        susut += val.susut || 0
-      }
+      // if (val.unit_id[0] === 101 || val.unit_id[0] === 102 || val.unit_id[0] === 103 || val.unit_id[0] === 104) {
+      //   daya += (Math.abs(val.p) || 0) / 1000 // MW
+      //   dmp += (Math.abs(val.p_dmp) || 0) / 1000 // MW
+      //   susut += val.susut || 0
+      // }
 
       if (val.v) {
         voltage += val.v || 0
@@ -574,9 +587,17 @@ async function getTableTotalTernate(req, res) {
         dataNotNull += 1
       }
       
-      if (val.unit_id[0] === 151 && (val.unit_subname === "150-PLTMG TRAFO1" || val.unit_subname === "150-PLTMG TRAFO2")) {
+      // Frequensi  and Cos phi
+      if (val.unit_id[0] === 152 && (val.unit_subname === "150-TRAFO1" || val.unit_subname === "150-TRAFO2")) {
         freq += val.f || 0
         cos_phi += val.pf || 0
+      }
+
+      // Total daya
+      if ((val.unit_id[0] === 151 && (val.unit_subname === "150-TRAFO1" || val.unit_subname === "150-TRAFO2")) || val.unit_id[0] === 102 || val.unit_id[0] === 103 || val.unit_id[0] === 104) {
+        daya += (Math.abs(val.p) || 0) / 1000 // MW
+        dmp += (Math.abs(val.p_dmp) || 0) / 1000 // MW
+        susut += val.susut || 0
       }
 
       if (val.unit_id[0] === 151 && val.unit_subname === "150-LINE1") {
