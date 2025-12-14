@@ -559,7 +559,7 @@ async function getTableTotalTernate(req, res) {
     
     const data = await getAllScadaUnitMeter()
 
-    const spinningAndReserveData = await getLastSpiningAndReserve()
+    // const spinningAndReserveData = await getLastSpiningAndReserve()
 
     let daya = 0
     let dmp = 0
@@ -572,6 +572,7 @@ async function getTableTotalTernate(req, res) {
     let dataFreq = 0
     let passo1 = 0
     let passo2 = 0
+    let p_dmp_netto = 0
 
     data?.forEach(val => {
 
@@ -600,6 +601,11 @@ async function getTableTotalTernate(req, res) {
         susut += val.susut || 0
       }
 
+      // Dmp netto
+      if (val.unit_id[0] === 101 || val.unit_id[0] === 102 || val.unit_id[0] === 103 || val.unit_id[0] === 104) {
+        p_dmp_netto += (Math.abs(val.p_dmp_netto) || 0) / 1000 // MW
+      }
+
       if (val.unit_id[0] === 151 && val.unit_subname === "150-LINE1") {
         passo1 += val.i || 0
       }
@@ -608,6 +614,9 @@ async function getTableTotalTernate(req, res) {
         passo2 += val.i || 0
       }
     })
+
+    // Reserve Margin (%) = ((DMP Netto-Beban)/DMP Netto)*100
+    reserveMargin = ((p_dmp_netto - daya) / p_dmp_netto) * 100
 
     const result = {
       daya,
@@ -619,11 +628,10 @@ async function getTableTotalTernate(req, res) {
       passo1,
       passo2,
       susut,
-      spinningReserve: spinningAndReserveData.spinning,
-      reserveMargin: spinningAndReserveData.reverse
+      reserveMargin
+      // spinningReserve: spinningAndReserveData.spinning,
+      // reserveMargin: spinningAndReserveData.reverse
     }
-
-    // Reserve Margin (%) = (DMP-Beban)/Beban
 
     res.status(200).json(result)
   } catch (error) {
