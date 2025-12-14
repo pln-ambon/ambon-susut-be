@@ -450,6 +450,18 @@ async function getDataMapTernate(req, res) {
       //   acc[key].vAverage = acc[key].vTotal / acc[key].vLength
       //   acc[key].fAverage = acc[key].fTotal / acc[key].vLength
       // }
+      
+      // 101 => PLTMG KASTELA
+      if (obj.unit_id[0] === 101 && (obj.unit_subname === "GEN1" || obj.unit_subname === "GEN2" || obj.unit_subname === "GEN3" || obj.unit_subname === "GEN4")) {
+        acc[key].pTotal += Math.abs(obj.p) / 1000 // MW
+        if (obj.v) {
+          acc[key].vTotal += obj.v
+          acc[key].fTotal += obj.f
+          acc[key].vLength += 1
+        }
+        acc[key].vAverage = acc[key].vTotal / acc[key].vLength
+        acc[key].fAverage = acc[key].fTotal / acc[key].vLength
+      }
 
       // 102 => PLTU TIDORE
       if (obj.unit_id[0] === 102 && (obj.unit_subname === "GEN1" || obj.unit_subname === "GEN2")) {
