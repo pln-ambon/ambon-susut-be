@@ -588,11 +588,12 @@ async function getTableTotalTernate(req, res) {
 
     data?.forEach(val => {
 
-      // if (val.unit_id[0] === 101 || val.unit_id[0] === 102 || val.unit_id[0] === 103 || val.unit_id[0] === 104) {
-      //   daya += (Math.abs(val.p) || 0) / 1000 // MW
-      //   dmp += (Math.abs(val.p_dmp) || 0) / 1000 // MW
-      //   susut += val.susut || 0
-      // }
+      // Total daya
+      if (val.unit_id[0] === 101 || val.unit_id[0] === 102 || val.unit_id[0] === 103 || val.unit_id[0] === 104) {
+        daya += (Math.abs(val.p) || 0) / 1000 // MW
+        dmp += (Math.abs(val.p_dmp) || 0) / 1000 // MW
+        susut += val.susut || 0
+      }
 
       if (val.v) {
         voltage += val.v || 0
@@ -606,12 +607,12 @@ async function getTableTotalTernate(req, res) {
         cos_phi += val.pf || 0
       }
 
-      // Total daya
-      if ((val.unit_id[0] === 151 && (val.unit_subname === "150-TRAFO1" || val.unit_subname === "150-TRAFO2")) || val.unit_id[0] === 102 || val.unit_id[0] === 103 || val.unit_id[0] === 104) {
-        daya += (Math.abs(val.p) || 0) / 1000 // MW
-        dmp += (Math.abs(val.p_dmp) || 0) / 1000 // MW
-        susut += val.susut || 0
-      }
+      // // Total daya
+      // if ((val.unit_id[0] === 151 && (val.unit_subname === "150-TRAFO1" || val.unit_subname === "150-TRAFO2")) || val.unit_id[0] === 102 || val.unit_id[0] === 103 || val.unit_id[0] === 104) {
+      //   daya += (Math.abs(val.p) || 0) / 1000 // MW
+      //   dmp += (Math.abs(val.p_dmp) || 0) / 1000 // MW
+      //   susut += val.susut || 0
+      // }
 
       // Dmp netto
       if (val.unit_id[0] === 101 || val.unit_id[0] === 102 || val.unit_id[0] === 103 || val.unit_id[0] === 104) {
