@@ -502,6 +502,32 @@ async function getDataMapTernate(req, res) {
         acc[key].fAverage = acc[key].fTotal / acc[key].vLength
       }
 
+      // 104 => PLTD KASTELA
+      if (obj.unit_id[0] === 104) {
+        acc[key].pTotal += Math.abs(obj.p) / 1000 // MW
+        if (obj.v) {
+          acc[key].vTotal += obj.v
+          acc[key].fTotal += obj.f
+          acc[key].vLength += 1
+        }
+
+        acc[key].vAverage = acc[key].vTotal / acc[key].vLength
+        acc[key].fAverage = acc[key].fTotal / acc[key].vLength
+      }
+
+      // 103 => PLTD KAYU MERAH
+      if (obj.unit_id[0] === 103) {
+        acc[key].pTotal += Math.abs(obj.p) / 1000 // MW
+        if (obj.v) {
+          acc[key].vTotal += obj.v
+          acc[key].fTotal += obj.f
+          acc[key].vLength += 1
+        }
+
+        acc[key].vAverage = acc[key].vTotal / acc[key].vLength
+        acc[key].fAverage = acc[key].fTotal / acc[key].vLength
+      }
+
       if (obj.unit_id[0] === 151 && obj.unit_subname === "150-LINE1") {
         acc[key].current1 += obj.i
       }
