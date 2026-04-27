@@ -152,6 +152,8 @@ async function getTableTotal(req, res) {
     let dataFreq = 0
     let passo1 = 0
     let passo2 = 0
+    let p_dmp_netto = 0
+    let p_dmp_pasok = 0
 
     data?.forEach(val => {
 
@@ -159,6 +161,8 @@ async function getTableTotal(req, res) {
         daya += (val.p || 0) / 1000 // MW
         dmp += (val.p_dmp || 0) / 1000 // MW
         susut += val.susut || 0
+        p_dmp_netto += (val.p_dmp_netto || 0) / 1000 // MW
+        p_dmp_pasok += (val.p_dmp_pasok || 0) / 1000 // MW
       }
 
       if (val.v) {
@@ -192,7 +196,9 @@ async function getTableTotal(req, res) {
       passo2,
       susut,
       spinningReserve: spinningAndReserveData.spinning,
-      reserveMargin: spinningAndReserveData.reverse
+      reserveMargin: spinningAndReserveData.reverse,
+      spinningReserveCalculated: p_dmp_netto - daya,
+      cadanganDaya: p_dmp_pasok - daya
     }
 
     // Reserve Margin (%) = (DMP-Beban)/Beban
@@ -585,6 +591,7 @@ async function getTableTotalTernate(req, res) {
     let passo1 = 0
     let passo2 = 0
     let p_dmp_netto = 0
+    let p_dmp_pasok = 0
 
     data?.forEach(val => {
 
@@ -593,6 +600,8 @@ async function getTableTotalTernate(req, res) {
         daya += (Math.abs(val.p) || 0) / 1000 // MW
         dmp += (Math.abs(val.p_dmp) || 0) / 1000 // MW
         susut += val.susut || 0
+        p_dmp_netto += (Math.abs(val.p_dmp_netto) || 0) / 1000 // MW
+        p_dmp_pasok += (Math.abs(val.p_dmp_pasok) || 0) / 1000 // MW
       }
 
       if (val.v) {
@@ -613,11 +622,6 @@ async function getTableTotalTernate(req, res) {
       //   dmp += (Math.abs(val.p_dmp) || 0) / 1000 // MW
       //   susut += val.susut || 0
       // }
-
-      // Dmp netto
-      if (val.unit_id[0] === 101 || val.unit_id[0] === 102 || val.unit_id[0] === 103 || val.unit_id[0] === 104) {
-        p_dmp_netto += (Math.abs(val.p_dmp_netto) || 0) / 1000 // MW
-      }
 
       if (val.unit_id[0] === 151 && val.unit_subname === "150-LINE1") {
         passo1 += val.i || 0
@@ -641,7 +645,9 @@ async function getTableTotalTernate(req, res) {
       passo1,
       passo2,
       susut,
-      reserveMargin
+      reserveMargin,
+      spinningReserveCalculated: p_dmp_netto - daya,
+      cadanganDaya: p_dmp_pasok - daya
       // spinningReserve: spinningAndReserveData.spinning,
       // reserveMargin: spinningAndReserveData.reverse
     }
